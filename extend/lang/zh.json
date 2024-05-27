@@ -1,0 +1,6 @@
+{
+  "success": "成功",
+  "failure": "失败",
+  "account_error": "账号错误",
+  "password_error": "密码错误"
+}
