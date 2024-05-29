@@ -1,4 +1,6 @@
 {
   "success": "Success",
-  "failure": "Failure"
+  "failure": "Failure",
+  "account_error": "account_error",
+  "password_error": "password_error"
 }

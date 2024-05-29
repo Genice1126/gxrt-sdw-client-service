@@ -1,3 +1,4 @@
+const CONFIG = require('../config');
 const BaseServer = require("./base");
 const Helper = require('../extend/helper');
 const websocket = require('../service/websocket');

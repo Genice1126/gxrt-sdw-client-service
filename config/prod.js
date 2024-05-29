@@ -7,7 +7,7 @@ module.exports = {
     CONNECTED: 0,  //0第一次登录 1修改密码完成 2上网配置完成 3socket配置完成
     ACCOUNT: "admin",
     PASSWORD: "admin",
-    SOCKET: "ws://192.168.39.24:5002"
+    SOCKET: "ws://192.168.39.22:5002"
   },
 
   SERVICE_CONFIG_PATH: "/root/gxrt-sdw/gxrt-sdw-client-service",

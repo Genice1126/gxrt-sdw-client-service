@@ -47,6 +47,7 @@ exports.interfaceUpdateWanGroup = (deploy_detail, con_name = "GE0") => {
       } else {
         query_res = `nmcli con add type ethernet ifname ${con_name} con-name ${con_name} connection.stable-id WAN ipv4.addresses ${deploy_detail.address} `;
         if(deploy_detail.gateway) query_res += `ipv4.gateway ${deploy_detail.gateway} `;
+        if(deploy_detail.gateway_weight != "0") query_res += `metric ${deploy_detail.gateway_weight} `
         if(deploy_detail.dns) query_res += `ipv4.dns ${deploy_detail.dns} `;
         query_res += `ipv4.method manual`
       }
