@@ -58,7 +58,7 @@ exports.unauthorized = (client) => {
 //监听更新Wan口
 exports.updateWanInterfaceDeploy = (client) => {
   client.on(`wss:event:node:socket:interface:wan:update`, async(data) => {
-    console.log(`===updateWanInterfaceDeploy===, Data: ${JSON.stringify(data)}`)
+    console.log(`===updateWanInterfaceDeploy===, Data: ${JSON.stringify(data)}`);
     await interfaceCommand.interfaceUpdateWanGroup(data.deploy_detail, data.interface_name);
   })
 }

@@ -70,6 +70,7 @@ module.exports = {
           basicCommand.networkGateway(`LAN`)
         ]);
         data_array.push({interface_name: `LAN`, interface_type: 2, exec_body: {deploy_access_type: 3, deploy_detail: {address: ip, gateway: gateway, dns: dns}}})
+        console.log('vmnicTargetScheduleTask====>>', data_array);
         for(let i = 0; i < data_array.length; i++) {
           EmitEvent.emitVmnicTargetSyncSocket(client, data_array[i])
         }
