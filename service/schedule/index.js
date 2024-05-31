@@ -1,6 +1,7 @@
 const schedule = require('node-schedule');
 const HttpService = require('../index');
 const EmitEvent = require('../websocket/emit-event');
+const {basicCommand} = require('../../extend/command/index');
 module.exports = {
   osTargetScheduleTask: {
     job: null,
