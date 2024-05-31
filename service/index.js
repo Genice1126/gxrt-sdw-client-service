@@ -68,7 +68,7 @@ class HttpService extends BaseServer {
       websocket(`ws://${socket_address}:5002`, {query: {sn: device_sn, password: device_pwd}});
       await Helper.backupFiles(CONFIG.SERVICE_CONFIG_PATH, CONFIG.SERVICE_CONFIG_NAME, CONFIG.SERVICE_CONFIG_BAK_NAME); //备份
       const service_file_ctx = (await Helper.readFiles(CONFIG.SERVICE_CONFIG_PATH, CONFIG.SERVICE_CONFIG_NAME)).toString(); //读取源文件
-      await Helper.writeFiles(CONFIG.SERVICE_CONFIG_PATH, CONFIG.SERVICE_CONFIG_NAME, JSON.stringify(Object.assign(JSON.parse(service_file_ctx), {SOCKET: socket_address, DEVICE_PASSWORD: device_pwd}))); //写入新文件
+      await Helper.writeFiles(CONFIG.SERVICE_CONFIG_PATH, CONFIG.SERVICE_CONFIG_NAME, JSON.stringify(Object.assign(JSON.parse(service_file_ctx), {SOCKET: `ws://${socket_address}:5002`, DEVICE_PASSWORD: device_pwd}))); //写入新文件
       return super.success(res);
     } catch(e) {
       console.log('createSocketConnection-error==>', e);
