@@ -42,9 +42,9 @@ exports.authenticated = (client) => {
   client.on(`wss:event:node:socket:authenticated`, (data) => {
     console.log(`connection is successfully...`);
     global.socketConnectionStatus = 1;
-    schedule.heartBeatScheduleTask.startMission();
-    schedule.osTargetScheduleTask.startMission();
-    schedule.vmnicTargetScheduleTask.startMission();
+    schedule.heartBeatScheduleTask.startMission(client);
+    schedule.osTargetScheduleTask.startMission(client);
+    schedule.vmnicTargetScheduleTask.startMission(client);
   })
 }
 //监听设备认证未通过
