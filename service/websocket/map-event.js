@@ -9,7 +9,7 @@ exports.connection = (client) => {
 }
 //监听心跳时间事件
 exports.heartBeat = (client) => {
-  client.on('wss:event:node:socket:heartBeat', (data) => {
+  client.on('wss:event:node:socket:heart:beat', (data) => {
     const time = Date.now();
     const latency = time - data.time;
     global.socketHeartBeat = latency;
