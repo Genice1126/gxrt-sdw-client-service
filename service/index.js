@@ -53,7 +53,7 @@ class HttpService extends BaseServer {
       const {deploy_access_type, deploy_detail} = req.body;
       let access_type;
       (deploy_access_type == 2) ? access_type = "pppoe" : access_type = "ethernet"
-      await interfaceCommand.interfaceUpdateWanGroup({deploy_detail: deploy_detail});
+      await interfaceCommand.interfaceUpdateWanGroup(deploy_detail);
       return super.success(res);
     } catch(e) {
       console.log('initNetwork-error==>', e);
