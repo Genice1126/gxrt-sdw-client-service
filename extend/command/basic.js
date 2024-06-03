@@ -18,6 +18,7 @@ exports.readDeviceSerial = () => {
 exports.verifyNetwork = () => {
   return new Promise( (resolve, rejected) => {
     process.exec(`ping -4 -q -c 3 www.baidu.com`, (err, stdout, stderr) => {
+      const reg_res = stdout.match(/,(.*)(\S*)received/);
       const commandRes = (parseInt(stdout.match(/,(.*)(\S*)received/)[1]) == 0) ? 0 : 1;
       resolve(commandRes)
     })
