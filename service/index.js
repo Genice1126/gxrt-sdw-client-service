@@ -8,6 +8,10 @@ const {basicCommand, interfaceCommand} = require('../extend/command/index');
 
 class HttpService extends BaseServer {
   
+  constructor() {
+    super();
+  }
+
   /**
    * 登录
    */
@@ -108,12 +112,6 @@ class HttpService extends BaseServer {
       const serviceFileCtx = JSON.parse((await Helper.readFiles(CONFIG.SERVICE_CONFIG_PATH, CONFIG.SERVICE_CONFIG_NAME)).toString());
       serviceFileCtx.CONNECTED = req.body.progress;
       await Helper.writeFiles(CONFIG.SERVICE_CONFIG_PATH, CONFIG.SERVICE_CONFIG_NAME, JSON.stringify(serviceFileCtx));
-      // if(progress == 3) {
-      //   const vmnic_sync = await HttpService.__vmnicTargetSyncService();
-      //   for(let i = 0 ; i < vmnic_sync.length; i++) {
-      //     EmitEvent.emitVmnicTargetSyncSocket(global.socketConnection, vmnic_sync[i]);
-      //   }
-      //  }
       return super.success(res);
     } catch(e) {
       console.log('updateInitStatusService-error===>>', e);
