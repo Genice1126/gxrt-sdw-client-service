@@ -31,7 +31,6 @@ module.exports = {
       this.job = schedule.scheduleJob('* * * * *', async () => {
         const HttpService = require('../index');
         const exec_res = await HttpService.__vmnicTargetSyncService();
-        console.log('exec_res==>', exec_res);
         for(let i = 0 ; i < exec_res.length; i++) {
           EmitEvent.emitVmnicTargetSyncSocket(client, exec_res[i])
         }

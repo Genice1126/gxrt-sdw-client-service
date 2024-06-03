@@ -162,13 +162,10 @@ class HttpService extends BaseServer {
    * 同步获取物理网卡指标
    */
   static async __vmnicTargetSyncService() {
-    const vmnic_count = basicCommand.vmnicCount();
-    console.log('vmnic_count===>>', vmnic_count);
+    const vmnic_count = await basicCommand.vmnicCount();
     const data_array = [];
     for(let i = 0 ; i < vmnic_count.length; i++) {
-      console.log('i====>>', i);
       const vmnic_type = await interfaceCommand.interfaceType(`GE${i}`);
-      console.log('vmnic_type====>>', vmnic_type, vmnic_type == "WAN")
       if(vmnic_type == "WAN") {
         const [access_type, pppoe_account, ip, dns, gateway] = await Promise.all([
           interfaceCommand.interfaceMethod(`GE${i}`),
@@ -184,7 +181,6 @@ class HttpService extends BaseServer {
         data_array.push({interface_name: `GE${i}`, interface_type: 1, exec_body: {deploy_access_type: deploy_access_type, deploy_detail: deploy_detail}})
       }
     }
-    console.log('data_array===>>', data_array)
     const [ip, dns, gateway] = await Promise.all([
       basicCommand.networkAddress(`LAN`),
       basicCommand.networkDns(`LAN`),
