@@ -1,4 +1,5 @@
-const {interfaceCommand, manetCommand, domainAccelerCommand} = require('../../extend/command');
+const {interfaceCommand, manetCommand, domainAccelerCommand, diagnoseCommand} = require('../../extend/command');
+const EmitEvent = require('../websocket/emit-event');
 const schedule = require('../schedule');
 
 //监听连接事件
@@ -146,13 +147,6 @@ exports.updateManetMaster = (client) => {
     await manetCommand.manetUpdateMaster(data.branch, data.interface_name);
   })
 }
-//监听自组网删除分支节点后，在主节点的配置文件中删除对应值
-// exports.deleteManetBranchInMaster = (client) => {
-//   client.on(`wss:event:node:socket:manet:branch:in:master:delete`, async(data) => {
-//     console.log(`===deleteManetBranchInMaster===, Data: ${JSON.stringify(data)}`)
-//   })
-
-// }
 //监听自组网创建分支
 exports.addManetBranch = (client) => {
   client.on(`wss:event:node:socket:manet:branch:add`, async(data) => {
@@ -206,5 +200,21 @@ exports.deleteDomainAccelerDns = (client) => {
   client.on(`wss:event:node:socket:domain:acceler:dns:delete`, async (data) => {
     console.log(`===deleteDomainAccelerDns===, Data: ${JSON.stringify(data)}`)
     await domainAccelerCommand.domainAccelerDnsDelete(data.dns_analy, data.interface_name)
+  })
+}
+//添加ping诊断工具
+exports.addDiagnosePing = (client) => {
+  client.on(`wss:event:node:socket:diagnose:ping:create`, async(data) => {
+    console.log(`===addDiagnosePing===, Data: ${JSON.stringify(data)}`)
+    const exec_res = await diagnoseCommand.diagnoseAddPing(data.host_name, data.address_type, data.interface_name, data.frequency, data.interval);
+    EmitEvent.emitDiagnoseResult(client, {diagnose_id: data.diagnose_id, diagnose_result: exec_res});
+  })
+}
+//添加traceRouter诊断工具
+exports.addDiagnoseTraceRouter = (client) => {
+  client.on(`wss:event:node:socket:diagnose:trace:router:create`, async(data) => {
+    console.log(`===addDiagnoseTraceRouter===, Data: ${JSON.stringify(data)}`)
+    const exec_res = await diagnoseCommand.diagnoseAddTraceRouter(data.host_name, data.address_type, data.interface_name, data.hop_count, data.is_as, data.is_icmp)
+    EmitEvent.emitDiagnoseResult(client, {diagnose_id: data.diagnose_id, diagnose_result: exec_res});
   })
 }
