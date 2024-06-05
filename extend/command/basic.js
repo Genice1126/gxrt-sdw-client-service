@@ -1,5 +1,16 @@
 const process = require('child_process');
 const Helper = require('../helper');
+const CONFIG = require('../../config');
+
+/**
+ * 同步文件到micro
+ */
+exports.syncFile = (s_addr, d_addr) => {
+  return new Promise((resolve, rejected) => {
+    console.log(`scp ${s_addr} ${CONFIG.SSH_MICRO_SYNC}:${d_addr}`);
+    process.exec(`scp ${s_addr} ${CONFIG.SSH_MICRO_SYNC}:${d_addr}`, (err, stdout, stderr) => resolve());
+  })
+}
 
 /**
  * 读取设备sn编码

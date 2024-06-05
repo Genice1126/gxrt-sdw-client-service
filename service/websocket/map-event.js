@@ -1,7 +1,9 @@
-const {interfaceCommand, manetCommand, domainAccelerCommand, diagnoseCommand} = require('../../extend/command');
+const {interfaceCommand, manetCommand, domainAccelerCommand, diagnoseCommand, basicCommand} = require('../../extend/command');
 const EmitEvent = require('../websocket/emit-event');
 const schedule = require('../schedule');
-
+const path = require('path');
+const CONFIG = require('../../config');
+const Helper = require('../../extend/helper');
 //监听连接事件
 exports.connection = (client) => {
   client.on('connect', () => {
@@ -216,5 +218,34 @@ exports.addDiagnoseTraceRouter = (client) => {
     console.log(`===addDiagnoseTraceRouter===, Data: ${JSON.stringify(data)}`)
     const exec_res = await diagnoseCommand.diagnoseAddTraceRouter(data.host_name, data.address_type, data.interface_name, data.hop_count, data.is_as, data.is_icmp)
     EmitEvent.emitDiagnoseResult(client, {diagnose_id: data.diagnose_id, diagnose_result: exec_res});
+  })
+}
+//添加domain诊断工具
+exports.addDiagnoseDomain = (client) => {
+  client.on(`wss:event:node:socket:diagnose:domain:create`, async(data) => {
+    console.log(`===addDiagnoseDomain===, Data: ${JSON.stringify(data)}`)
+    const exec_res = await diagnoseCommand.diagnoseAddDomain(data.host_name, data.dns);
+    EmitEvent.emitDiagnoseResult(client, {diagnose_id: data.diagnose_id, diagnose_result: exec_res});
+  })
+}
+//添加端口诊断工具
+exports.addDiagnoseInterface = (client) => {
+  client.on(`wss:event:node:socket:diagnose:interface:create`, async(data) => {
+    console.log(`===addDiagnoseInterface===, Data: ${JSON.stringify(data)}`)
+    const exec_res = await diagnoseCommand.diagnoseAddInterface(data.host_name, data.interface_name, data.port);
+    EmitEvent.emitDiagnoseResult(client, {diagnose_id: data.diagnose_id, diagnose_result: exec_res});
+  })
+}
+//添加抓包诊断工具
+exports.addDiagnoseCapturePackage = (client) => {
+  client.on(`wss:event:node:socket:diagnose:capture:package:create`, async(data) => {
+    console.log(`===addDiagnoseCapturePackage===, Data: ${JSON.stringify(data)}`)
+    const file_name = `${data.diagnose_id}.pcap`
+    const download_path = path.join(CONFIG.DOWNLOAD_CAPTURE_PACKAGE_PATH, file_name);
+    const capture_pack_path = path.join(CONFIG.DIAGNOSE_CAPTURE_PACKAGE_PATH, file_name)
+    await diagnoseCommand.diagnoseAddCapturePackage(data.host_name, data.host_type, data.interface_name, data.msg_count, data.protocol, capture_pack_path, data.port, data.timeout);
+    await basicCommand.syncFile(capture_pack_path, download_path);  //scp到micro
+    await Helper.deleteFiles(CONFIG.DIAGNOSE_CAPTURE_PACKAGE_PATH, file_name);
+    EmitEvent.emitDiagnoseResult(client, {diagnose_id: data.diagnose_id, diagnose_result: download_path});
   })
 }

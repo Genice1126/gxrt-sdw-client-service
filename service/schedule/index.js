@@ -4,7 +4,7 @@ module.exports = {
   osTargetScheduleTask: {
     job: null,
     startMission: function(client){
-      this.job = schedule.scheduleJob('*/10 * * * * *', async() => {
+      this.job = schedule.scheduleJob('* * * * *', async() => {
         const HttpService = require('../index');
         const exec_res = await HttpService.__osTargetSyncService();
         EmitEvent.emitOsTargetSyncSocket(client, exec_res)
