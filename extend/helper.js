@@ -51,7 +51,7 @@ exports.appendFiles = async (filePath, fileName, content) => {
  * 删除文件
  */
 exports.deleteFiles = async (filePath, fileName) => {
-  const is_exists = await this.existsFiles(path.join(filePath, fileName))
+  const is_exists = await this.existsFiles(filePath, fileName)
   if(is_exists) fs.unlink(path.join(filePath, fileName));
   return;
 }
