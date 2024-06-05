@@ -94,12 +94,7 @@ exports.interfaceUpdateLanAddress = (params) => {
 exports.interfaceAddLanDhcp = (start, end, gateway, dns, tenancy) => {
   return new Promise(async (resolve, rejected) => {
     await Helper.deleteFiles('/etc/dnsmasq.d', 'dhcp.conf');
-    const content = `
-      interface=LAN\n
-      dhcp-range=${start},${end},255.255.255.0,${tenancy}h\n
-      dhcp-option=3,${gateway}
-      dhcp-option=6,${dns}
-    `
+    const content = `interface=LAN\ndhcp-range=${start},${end},255.255.255.0,${tenancy}h\ndhcp-option=3,${gateway}dhcp-option=6,${dns}`
     await Helper.writeFiles('/etc/dnsmasq.d', 'dhcp.conf', content);
     process.exec(`systemctl restart dnsmasq`, (err, stdout, stderr) => resolve());
   })
@@ -121,13 +116,7 @@ exports.interfaceAddLanDns = (address, port, cache_size, upstream, analysis) => 
     let server_content = '', address_content = '';
     upstream.map(item => server_content += `server=${item}\n`)
     analysis.map(item => address_content += `address=/${item.domain}/${item.ip}\n`);
-    const content = `
-      listen-address=${address}\n
-      port=${port}\n
-      cache-size=${cache_size}\n
-      ${server_content}
-      ${address_content}
-    `
+    const content = `cache-size=${cache_size}\n${server_content}${address_content}`
     await Helper.writeFiles('/etc/dnsmasq.d/', 'dns.conf', content)
     process.exec(`systemctl restart dnsmasq`, (err, stdout, stderr) => resolve())
   })

@@ -7,7 +7,7 @@ const Helper = require('../helper');
 exports.domainAccelerAdd = (domain_list, con_name = "GE0") => {
   return new Promise(async (resolve, rejected) => {
     let content = "";
-    domain_list.map(item => content += `ipset=/${item}/${con_name}\n`)
+    domain_list.map(item => content += `ipset=/${item}/vpn4\n`)
     await Helper.writeFiles('/etc/dnsmasq.d/', 'outside.conf', content);
     process.exec(`ipset create vpn4 hash:ip`, (err, stdout, stderr) => {
       process.exec(`ipset save > /etc/ipset/ipset-rules.save`, (err, stdout, stderr) => {
@@ -26,7 +26,7 @@ exports.domainAccelerAdd = (domain_list, con_name = "GE0") => {
 exports.domainAccelerUpdate = (domain_list, con_name = "GE0") => {
   return new Promise(async (resolve, rejected) => {
     let content = "";
-    domain_list.map(item => content += `ipset=/${item}/${con_name}\n`)
+    domain_list.map(item => content += `ipset=/${item}/vpn4\n`)
     await Helper.writeFiles('/etc/dnsmasq.d/', 'outside.conf', content);
     process.exec(`systemctl restart dnsmasq.service`, (err, stdout, stderr) => resolve())
   })
