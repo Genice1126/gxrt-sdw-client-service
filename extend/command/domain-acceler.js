@@ -36,7 +36,7 @@ exports.domainAccelerUpdate = (domain_list, con_name = "GE0") => {
  */
 exports.domainAccelerDelete = () => {
   return new Promise(async (resolve, rejected) => {
-    await Helper.deleteFiles(`/etc.dnsmasq.d/`, 'outside.conf');
+    await Helper.deleteFiles(`/etc/dnsmasq.d/`, 'outside.conf');
     process.exec(`ipset destroy vpn4`, (err, stdout, stderr) => {
       process.exec(`ipset save > /etc/ipset/ipset-rules.save`, (err, stdout, stderr) => {
         process.exec(`iptables -t mangle -D PREROUTING -i LAN -m set --match-set vpn4 dst -j MARK --set-mark 100`, (err, stdout, stderr) => {
