@@ -243,7 +243,7 @@ exports.addDiagnoseCapturePackage = (client) => {
     const file_name = `${data.diagnose_id}.pcap`
     const download_path = path.join(CONFIG.DOWNLOAD_CAPTURE_PACKAGE_PATH, file_name);
     const capture_pack_path = path.join(CONFIG.DIAGNOSE_CAPTURE_PACKAGE_PATH, file_name)
-    await diagnoseCommand.diagnoseAddCapturePackage(data.host_name, data.host_type, data.interface_name, data.msg_count, data.protocol, capture_pack_path, data.port, data.timeout);
+    await diagnoseCommand.diagnoseAddCapturePackage(data.host_name, data.host_type, data.interface_name, data.protocol, data.port, capture_pack_path, data.msg_count, data.timeout);
     await basicCommand.syncFile(capture_pack_path, download_path);  //scp到micro
     await Helper.deleteFiles(CONFIG.DIAGNOSE_CAPTURE_PACKAGE_PATH, file_name);
     EmitEvent.emitDiagnoseResult(client, {diagnose_id: data.diagnose_id, diagnose_result: download_path});
