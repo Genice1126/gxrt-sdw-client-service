@@ -122,12 +122,32 @@ exports.interfaceAddLanDns = (address, port, cache_size, upstream, analysis) => 
   })
 }
 /**
+ * 强制开启Lan口本地Dns
+ */
+exports.interfaceAddLanLocalDns = () => {
+  return new Promise(async (resolve, rejected) => {
+    process.exec(`iptables -t nat -A PREROUTING  -i LAN  --dport 53 -j DNAT --to 127.0.0.1:53`, (err, stdout, stderr) => {
+      process.exec(`netfilter-persistent save`, (err, stdout, stderr) => resolve())
+    })
+  })
+}
+/**
  * 删除LAN口Dns
  */
 exports.interfaceDeleteLanDns = () => {
   return new Promise(async (resolve, rejected) => {
     await Helper.deleteFiles('/etc/dnsmasq.d/', 'dns.conf');
     process.exec(`systemctl restart dnsmasq`, (err, stdout, stderr) => resolve())
+  })
+}
+/**
+ * 删除Lan口本地Dns
+ */
+exports.interfaceDeleteLanLocalDns = () => {
+  return new Promise(async (resolve, rejected) => {
+    process.exec(`iptables -t nat -D PREROUTING -i LAN --dport 53 -j DNAT --to 127.0.0.1:53`, (err, stdout, stderr) => {
+      process.exec(`netfilter-persistent save`, (err, stdout, stderr) => resolve())
+    })
   })
 }
 /**

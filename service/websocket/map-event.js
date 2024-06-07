@@ -1,4 +1,4 @@
-const {interfaceCommand, manetCommand, domainAccelerCommand, diagnoseCommand, basicCommand} = require('../../extend/command');
+const {interfaceCommand, manetCommand, domainAccelerCommand, diagnoseCommand, basicCommand, natSwitchCommand} = require('../../extend/command');
 const EmitEvent = require('../websocket/emit-event');
 const schedule = require('../schedule');
 const path = require('path');
@@ -121,11 +121,25 @@ exports.addLanDnsService = (client) => {
     );
   })
 }
+//监听Lan口添加强制本地
+exports.addLanLocalDnsService = (client) => {
+  client.on(`wss:event:node:socket:dns:local:lan:add`, async(data) => {
+    console.log(`===addLanLocalDnsService===, Data: ${JSON.stringify(data)}`)
+    await interfaceCommand.interfaceAddLanLocalDns();
+  })
+}
 //监听Lan口删除Dns
 exports.deleteLanDnsService = (client) => {
   client.on(`wss:event:node:socket:dns:lan:delete`, async(data) => {
     console.log(`===deleteLanDnsService===, Data: ${JSON.stringify(data)}`)
     await interfaceCommand.interfaceDeleteLanDns();
+  })
+}
+//监听Lan口删除强制本地
+exports.deleteLanLocalDnsService = (client) => {
+  client.on(`wss:event:node:socket:dns:local:lan:delete`, async(data) => {
+    console.log(`===deleteLanLocalDnsService===, Data: ${JSON.stringify(data)}`)
+    await interfaceCommand.interfaceDeleteLanLocalDns();
   })
 }
 //监听创建自组网主节点
@@ -247,5 +261,33 @@ exports.addDiagnoseCapturePackage = (client) => {
     await basicCommand.syncFile(capture_pack_path, download_path);  //scp到micro
     await Helper.deleteFiles(CONFIG.DIAGNOSE_CAPTURE_PACKAGE_PATH, file_name);
     EmitEvent.emitDiagnoseResult(client, {diagnose_id: data.diagnose_id, diagnose_result: download_path});
+  })
+}
+//添加NAT源地址转换
+exports.addNatSwitchSource = (client) => {
+  client.on(`wss:event:node:socket:nat:switch:source:create`, async(data) => {
+    console.log(`===addNatSwitchSource===, Data: ${JSON.stringify(data)}`);
+    await natSwitchCommand.natSwitchSourceAdd(data.s_interface_name, data.s_address, data.d_interface_name, data.d_address, data.convert_s_address);
+  })
+}
+//删除NAT源地址转换
+exports.deleteNatSwitchSource = (client) => {
+  client.on(`wss:event:node:socket:nat:switch:source:delete`, async(data) => {
+    console.log(`===deleteNatSwitchSource===, Data: ${JSON.stringify(data)}`)
+    await natSwitchCommand.natSwitchSourceDelete(data.s_interface_name, data.s_address, data.d_interface_name, data.d_address, data.convert_s_address);
+  })
+}
+//添加NAT目标地址转换
+exports.addNatSwitchDestin = (client) => {
+  client.on(`wss:event:node:socket:nat:switch:destin:create`, async(data) => {
+    console.log(`===addNatSwitchDestin===, Data: ${JSON.stringify(data)}`)
+    await natSwitchCommand.natSwitchDestinAdd(data.s_interface_name, data.s_address, data.d_protocol, data.d_address, data.d_port, data.convert_d_address, data.convert_d_port);
+  })
+}
+//删除NAT目标地址转换
+exports.deleteNatSwitchDestin = (client) => {
+  client.on(`wss:event:node:socket:nat:switch:destin:delete`, async(data) => {
+    console.log(`===deleteNatSwitchDestin===, Data: ${JSON.stringify(data)}`)
+    await natSwitchCommand.natSwitchDestinDelete(data.s_interface_name, data.s_address, data.d_protocol, data.d_address, data.d_port, data.convert_d_address, data.convert_d_port);
   })
 }
