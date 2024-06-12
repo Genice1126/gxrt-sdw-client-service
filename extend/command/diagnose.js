@@ -8,6 +8,9 @@ exports.diagnoseAddPing = (host, address_type, interface_name, frequency = 5, in
     if(interface_name) query_res += ` -I ${interface_name}`;
     console.log('query_res===>>', query_res);
     process.exec(query_res, (err, stdout, stderr) => {
+      console.log('1===>>', err);
+      console.log('2===>', stdout);
+      console.log('33====>', stderr);
       resolve(stdout) || resolve(err || stderr)
     })
   })
