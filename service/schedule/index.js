@@ -69,7 +69,7 @@ module.exports = {
               this.count[file_json.interface_name]++;
             }
           }else {
-            console.log('2222');
+            console.log('2222======>>>>', i, file_json.diagnose_link_params.host[i]);
             const source_addr_sub = await basicCommand.networkAddress(file_json.interface_name);
             const source_addr = source_addr_sub.split("/")[0];
             console.log('source_addr====>>', source_addr);
@@ -78,6 +78,7 @@ module.exports = {
             const reg_res = exec_res.includes("timed out");
             console.log('reg_res=====>>', reg_res);
             if(!reg_res) {
+              console.log('====break===');
               this.count[file_json.interface_name] = 0;
               break;
             }else if(i == file_json.diagnose_link_params.host.length - 1){
