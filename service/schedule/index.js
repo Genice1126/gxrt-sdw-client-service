@@ -50,12 +50,14 @@ module.exports = {
       const file_ctx = await Helper.readFiles(CONFIG.SCHEDULE_DIAGNOSE_LINK_PATH, file_name);
       console.log('file_ctx===>', file_ctx);
       const file_json = JSON.parse(file_ctx);
+      console.log('file_json===>>', file_json, typeof file_json);
       const schedule_time = (file_json.diagnose_link_interval == '60') ? '* * * * *' : `*/${file_json.diagnose_link_interval} * * * * *`;
       console.log('schedule_time===>>', schedule_time);
       this.count[file_json.interface_name] = 0;
       this.jobs[file_json.interface_name] = schedule.scheduleJob(schedule_time, async() => {
         for(let i = 0; i < file_json.diagnose_link_params.host; i++) {
           if(file_json.diagnose_link_method_type == 1) {
+            console.log('1111');
             const exec_res = await diagnoseCommand.diagnoseAddPing(file_json.diagnose_link_params.host[i], "1", file_json.interface_name, "1", file_json.diagnose_link_interval);
             const reg_res = exec_res.match(/,(.*)(\S*)received/);
             console.log('reg_res====>>', reg_res);
@@ -66,6 +68,7 @@ module.exports = {
               this.count[file_json.interface_name]++;
             }
           }else {
+            console.log('2222');
             const source_addr_sub = await basicCommand.networkAddress(file_json.interface_name);
             const source_addr = source_addr_sub.split("/")[0];
             const exec_res = await diagnoseCommand.diagnoseAddDigDomain(source_addr, file_json.diagnose_link_params.host[i], file_json.diagnose_link_params.domain);
