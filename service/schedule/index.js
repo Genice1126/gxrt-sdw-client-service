@@ -85,7 +85,7 @@ module.exports = {
         console.log('file_json.diagnose_link_failure_threshold====>>', file_json.diagnose_link_failure_threshold);
         console.log('this.count[file_json.interface_name]=====>>', this.count[file_json.interface_name]);
         if(this.count[file_json.interface_name] >= file_json.diagnose_link_failure_threshold) {
-          await this.basicCommand.systemLogger('warn', 'diagnose-link', `${file_json.interface_name}链路检测-Error`);
+          await basicCommand.systemLogger('warn', 'diagnose-link', `${file_json.interface_name}链路检测-Error`);
         }
       })
     },
@@ -122,7 +122,7 @@ module.exports = {
             }
           }
           if(this.count[file_json.interface_name] >= file_json.diagnose_link_failure_threshold) {
-            await this.basicCommand.systemLogger('warn', 'diagnose-link', `${file_json.interface_name}链路检测-Error`);
+            await basicCommand.systemLogger('warn', 'diagnose-link', `${file_json.interface_name}链路检测-Error`);
           }
         })
       }
