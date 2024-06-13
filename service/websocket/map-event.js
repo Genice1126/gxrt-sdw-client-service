@@ -29,7 +29,7 @@ exports.disconnect = (client) => {
     schedule.osTargetScheduleTask.stopMission();
     schedule.heartBeatScheduleTask.stopMission();
     schedule.vmnicTargetScheduleTask.stopMission();
-    
+    schedule.diagnoseLinkScheduleTask.stopAllMission();
   })
 }
 //监听连接错误事件
@@ -49,6 +49,7 @@ exports.authenticated = (client) => {
     schedule.heartBeatScheduleTask.startMission(client);
     schedule.osTargetScheduleTask.startMission(client);
     schedule.vmnicTargetScheduleTask.startMission(client);
+    schedule.diagnoseLinkScheduleTask.startAllMission(client);
   })
 }
 //监听设备认证未通过
