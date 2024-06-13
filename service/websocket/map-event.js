@@ -271,7 +271,8 @@ exports.addDiagnoseLink = (client) => {
     console.log('--暂停任务--')
     await schedule.diagnoseLinkScheduleTask.stopAssignMission(data.interface_name);
     console.log('--写文件--')
-    await Helper.writeFiles('../schedule/diagnose-link', `${data.interface_name}.txt`, JSON.stringify(data));
+    const write_path = path.join(__dirname, '../schedule/diagnose-link')
+    await Helper.writeFiles(write_path, `${data.interface_name}.txt`, JSON.stringify(data));
     console.log('--开始任务--')
     await schedule.diagnoseLinkScheduleTask.startAssignMission(client, `${data.interface_name}.txt`);
     // await schedule.diagnoseLinkScheduleTask.stopMission();
@@ -287,7 +288,8 @@ exports.deleteDiagnoseLink = (client) => {
     console.log('--暂停任务--')
     await schedule.diagnoseLinkScheduleTask.stopAssignMission(data.interface_name);
     console.log('--删除文件--')
-    await Helper.deleteFiles('../schedule/diagnose-link', `${data.interface_name}.txt`)
+    const write_path = path.join(__dirname, '../schedule/diagnose-link')
+    await Helper.deleteFiles(write_path, `${data.interface_name}.txt`)
     // await schedule.diagnoseLinkScheduleTask.stopMission();
     // await Helper.deleteFiles('../schedule/self-starting-task', 'diagnose-link.txt');
   })
