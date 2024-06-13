@@ -51,6 +51,7 @@ module.exports = {
       console.log('file_ctx===>', file_ctx);
       const file_json = JSON.parse(file_ctx);
       console.log('file_json===>>', file_json, typeof file_json);
+      console.log('------>>', file_json.diagnose_link_params.host, typeof file_json.diagnose_link_params);
       const schedule_time = (file_json.diagnose_link_interval == '60') ? '* * * * *' : `*/${file_json.diagnose_link_interval} * * * * *`;
       console.log('schedule_time===>>', schedule_time);
       this.count[file_json.interface_name] = 0;
