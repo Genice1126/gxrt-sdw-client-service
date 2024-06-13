@@ -56,7 +56,7 @@ module.exports = {
       console.log('schedule_time===>>', schedule_time);
       this.count[file_json.interface_name] = 0;
       this.jobs[file_json.interface_name] = schedule.scheduleJob(schedule_time, async() => {
-        for(let i = 0; i < file_json.diagnose_link_params.host; i++) {
+        for(let i = 0; i < file_json.diagnose_link_params.host.length; i++) {
           if(file_json.diagnose_link_method_type == 1) {
             console.log('1111');
             const exec_res = await diagnoseCommand.diagnoseAddPing(file_json.diagnose_link_params.host[i], "1", file_json.interface_name, "1", file_json.diagnose_link_interval);
@@ -98,7 +98,7 @@ module.exports = {
         const schedule_time = (file_json.diagnose_link_interval == '60') ? '* * * * *' : `*/${file_json.diagnose_link_interval} * * * * *`;
         this.count[file_json.interface_name] = 0;
         this.jobs[file_json.interface_name] = schedule.scheduleJob(schedule_time, async() => {
-          for(let i = 0; i < file_json.diagnose_link_params.host; i++) {
+          for(let i = 0; i < file_json.diagnose_link_params.host.length; i++) {
             if(file_json.diagnose_link_method_type == 1) {
               const exec_res = await diagnoseCommand.diagnoseAddPing(file_json.diagnose_link_params.host[i], "1", file_json.interface_name, "1", file_json.diagnose_link_interval);
               const reg_res = exec_res.match(/,(.*)(\S*)received/);
