@@ -29,6 +29,7 @@ exports.disconnect = (client) => {
     schedule.osTargetScheduleTask.stopMission();
     schedule.heartBeatScheduleTask.stopMission();
     schedule.vmnicTargetScheduleTask.stopMission();
+    schedule.diagnoseLinkScheduleTask.stopMission();
   })
 }
 //监听连接错误事件
@@ -48,6 +49,7 @@ exports.authenticated = (client) => {
     schedule.heartBeatScheduleTask.startMission(client);
     schedule.osTargetScheduleTask.startMission(client);
     schedule.vmnicTargetScheduleTask.startMission(client);
+    schedule.diagnoseLinkScheduleTask.startMission(client);
   })
 }
 //监听设备认证未通过
@@ -261,6 +263,34 @@ exports.addDiagnoseCapturePackage = (client) => {
     await basicCommand.syncFile(capture_pack_path, download_path);  //scp到micro
     await Helper.deleteFiles(CONFIG.DIAGNOSE_CAPTURE_PACKAGE_PATH, file_name);
     EmitEvent.emitDiagnoseResult(client, {diagnose_id: data.diagnose_id, diagnose_result: download_path});
+  })
+}
+//添加链路诊断
+exports.addDiagnoseLink = (client) => {
+  client.on(`wss:event:node:socket:diagnose:link:create`, async (data) => {
+    console.log(`===addDiagnoseLink===, Data: ${JSON.stringify(data)}`)
+    console.log('--暂停任务--')
+    await schedule.diagnoseLinkScheduleTask.stopAssignMission(data.interface_name);
+    console.log('--写文件--')
+    await Helper.writeFiles('../schedule/diagnose-link', `${data.interface_name}.txt`);
+    console.log('--开始任务--')
+    await schedule.diagnoseLinkScheduleTask.startAssignMission(client, `${data.interface_name}.txt`);
+    // await schedule.diagnoseLinkScheduleTask.stopMission();
+    // await Helper.deleteFiles('../schedule/self-starting-task', 'diagnose-link.txt');
+    // await Helper.writeFiles('../schedule/self-starting-task', 'diagnose-link.txt');
+    // await schedule.diagnoseLinkScheduleTask.startMission(client);
+  })
+}
+//删除链路诊断
+exports.deleteDiagnoseLink = (client) => {
+  client.on(`wss:event:node:socket:diagnose:link:delete`, async (data) => {
+    console.log(`===deleteDiagnoseLink===, Data: ${JSON.stringify(data)}`)
+    console.log('--暂停任务--')
+    await schedule.diagnoseLinkScheduleTask.stopAssignMission(data.interface_name);
+    console.log('--删除文件--')
+    await Helper.deleteFiles('../schedule/diagnose-link', `${data.interface_name}.txt`)
+    // await schedule.diagnoseLinkScheduleTask.stopMission();
+    // await Helper.deleteFiles('../schedule/self-starting-task', 'diagnose-link.txt');
   })
 }
 //添加NAT源地址转换

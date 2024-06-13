@@ -22,7 +22,7 @@ exports.diagnoseAddTraceRouter = (host, address_type, interface_name, hop_count 
     if(is_icmp) query_res += ` -P icmp`;
     console.log('query_res=====>>', query_res);
     process.exec(query_res, (err, stdout, stderr) => {
-      resolve(stdout) || resolve(err || stderr)
+      (stdout) ? resolve(stdout) : resolve(stderr || err);
     })
   })
 }
@@ -33,7 +33,7 @@ exports.diagnoseAddDomain = (host, dns) => {
     if(dns) query_res += ` ${dns}`;
     console.log('query_res=====>>', query_res);
     process.exec(query_res, (err, stdout, stderr) => {
-      resolve(stdout) || resolve(err || stderr)
+      (stdout) ? resolve(stdout) : resolve(stderr || err);
     })
   })
 }
@@ -45,7 +45,7 @@ exports.diagnoseAddInterface = (host, interface_name, port) => {
     if(port) query_res += ` -p ${port}`
     console.log('query_res=====>>', query_res);
     process.exec(query_res, (err, stdout, stderr) => {
-      resolve(stdout) || resolve(err || stderr)
+      (stdout) ? resolve(stdout) : resolve(stderr || err);
     })
   })
 }
@@ -73,5 +73,11 @@ exports.diagnoseAddCapturePackage = (host, host_type, interface_name, protocol, 
     }
     console.log('quer_res===>>', query_res);
     process.exec(query_res, (err, stdout, stderr) => resolve())
+  })
+}
+
+exports.diagnoseAddDigDomain = (source_addr, dns, domain) => {
+  return new Promise((resolve, rejected) => {
+    process.exec(`dig +short -b ${source_addr} @${dns} ${domain}`, (err, stdout, stderr) => resolve())
   })
 }

@@ -35,6 +35,12 @@ exports.existsFiles = async (filePath, fileName) => {
   }
 }
 /**
+ * 读取文件夹中的所有文件名
+ */
+exports.readDir = async (filePath) => {
+  return fs.readdir(filePath);
+}
+/**
  * 写文件
  */
 exports.writeFiles = async (filePath, fileName, content) => {

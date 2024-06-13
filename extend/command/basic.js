@@ -11,7 +11,14 @@ exports.syncFile = (s_addr, d_addr) => {
     process.exec(`scp ${s_addr} ${CONFIG.SSH_MICRO_SYNC}:${d_addr}`, (err, stdout, stderr) => resolve());
   })
 }
-
+/**
+ * 写系统日志
+ */
+exports.systemLogger = (level, mode, ctx) => {
+  return new Promise((resolve, rejected) => {
+    process.exec(`logger -p user.${level} -t ${mode} "${ctx}"`, (err, stdout, stderr) => resolve());
+  })
+}
 /**
  * 读取设备sn编码
  */
@@ -30,8 +37,12 @@ exports.verifyNetwork = () => {
   return new Promise( (resolve, rejected) => {
     process.exec(`ping -4 -q -c 3 www.baidu.com`, (err, stdout, stderr) => {
       const reg_res = stdout.match(/,(.*)(\S*)received/);
-      const commandRes = (parseInt(stdout.match(/,(.*)(\S*)received/)[1]) == 0) ? 0 : 1;
-      resolve(commandRes)
+      if(reg_res) {
+        const commandRes = (parseInt(stdout.match(/,(.*)(\S*)received/)[1]) == 0) ? 0 : 1;
+        resolve(commandRes)
+      }else {
+        resolve(0);
+      }
     })
   })
 }
