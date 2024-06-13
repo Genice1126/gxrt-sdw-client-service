@@ -58,7 +58,8 @@ module.exports = {
           if(file_json.diagnose_link_method_type == 1) {
             const exec_res = await diagnoseCommand.diagnoseAddPing(file_json.diagnose_link_params.host[i], "1", file_json.interface_name, "1", file_json.diagnose_link_interval);
             const reg_res = exec_res.match(/,(.*)(\S*)received/);
-            if(reg_res && parseInt(stdout.match(/,(.*)(\S*)received/)[1]) != 0) {
+            console.log('reg_res====>>', reg_res);
+            if(reg_res && parseInt(exec_res.match(/,(.*)(\S*)received/)[1]) != 0) {
               this.count[file_json.interface_name] = 0;
               break;
             } else if(i == file_json.diagnose_link_params.host.length - 1){
@@ -97,7 +98,7 @@ module.exports = {
             if(file_json.diagnose_link_method_type == 1) {
               const exec_res = await diagnoseCommand.diagnoseAddPing(file_json.diagnose_link_params.host[i], "1", file_json.interface_name, "1", file_json.diagnose_link_interval);
               const reg_res = exec_res.match(/,(.*)(\S*)received/);
-              if(reg_res && parseInt(stdout.match(/,(.*)(\S*)received/)[1]) != 0) {
+              if(reg_res && parseInt(exec_res.match(/,(.*)(\S*)received/)[1]) != 0) {
                 this.count[file_json.interface_name] = 0;
                 break;
               } else if(i == file_json.diagnose_link_params.host.length - 1){
