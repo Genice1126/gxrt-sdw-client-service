@@ -14,6 +14,8 @@ module.exports = {
   DOWNLOAD_CAPTURE_PACKAGE_PATH: "/home/guoxin/",
   DIAGNOSE_CAPTURE_PACKAGE_PATH: "/root/gxrt-sdw/gxrt-sdw-client-service",  //抓包文件本机存放地址
 
+  SCHEDULE_DIAGNOSE_LINK_PATH: "/root/gxrt-sdw/gxrt-sdw-client-service", 
+
   SERVICE_CONFIG_PATH: "/root/gxrt-sdw/gxrt-sdw-client-service",
   SERVICE_CONFIG_NAME: "service.conf",
   SERVICE_CONFIG_BAK_NAME: "service.conf.bak",
