@@ -91,10 +91,12 @@ module.exports = {
     },
     startAllMission: async function(client) {
       const file_name_gather = await Helper.readDir(CONFIG.SCHEDULE_DIAGNOSE_LINK_PATH);
+      console.log('file_name_gather====>>', file_name_gather)
       if(file_name_gather.length == 0) return;
       for(let i = 0 ; i < file_name_gather.length; i++) {
         const file_ctx = await Helper.readFiles(CONFIG.SCHEDULE_DIAGNOSE_LINK_PATH, file_name_gather[i]);
         const file_json = JSON.parse(file_ctx);
+        console.log('file_json===>>', file_json);
         const schedule_time = (file_json.diagnose_link_interval == '60') ? '* * * * *' : `*/${file_json.diagnose_link_interval} * * * * *`;
         this.count[file_json.interface_name] = 0;
         this.jobs[file_json.interface_name] = schedule.scheduleJob(schedule_time, async() => {
@@ -121,6 +123,9 @@ module.exports = {
               }
             }
           }
+          console.log('file_json.diagnose_link_failure_threshold====>>', file_json.diagnose_link_failure_threshold);
+          console.log('this.count[file_json.interface_name]=====>>', file_json.interface_name, this.count[file_json.interface_name]);
+        
           if(this.count[file_json.interface_name] >= file_json.diagnose_link_failure_threshold) {
             await basicCommand.systemLogger('warn', 'diagnose-link', `${file_json.interface_name}链路检测-Error`);
           }
