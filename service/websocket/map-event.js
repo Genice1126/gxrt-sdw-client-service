@@ -271,7 +271,7 @@ exports.addDiagnoseLink = (client) => {
     console.log('--暂停任务--')
     await schedule.diagnoseLinkScheduleTask.stopAssignMission(data.interface_name);
     console.log('--写文件--')
-    await Helper.writeFiles('../schedule/diagnose-link', `${data.interface_name}.txt`);
+    await Helper.writeFiles('../schedule/diagnose-link', `${data.interface_name}.txt`, JSON.stringify(data));
     console.log('--开始任务--')
     await schedule.diagnoseLinkScheduleTask.startAssignMission(client, `${data.interface_name}.txt`);
     // await schedule.diagnoseLinkScheduleTask.stopMission();
