@@ -72,8 +72,9 @@ module.exports = {
             console.log('2222');
             const source_addr_sub = await basicCommand.networkAddress(file_json.interface_name);
             const source_addr = source_addr_sub.split("/")[0];
+            console.log('source_addr====>>', source_addr);
             const exec_res = await diagnoseCommand.diagnoseAddDigDomain(source_addr, file_json.diagnose_link_params.host[i], file_json.diagnose_link_params.domain);
-            console.logs('exec_res===>>', exec_res);
+            console.log('exec_res===>>', exec_res);
             const reg_res = exec_res.includes("timed out");
             if(!reg_res) {
               this.count[file_json.interface_name] = 0;

@@ -78,6 +78,7 @@ exports.diagnoseAddCapturePackage = (host, host_type, interface_name, protocol, 
 
 exports.diagnoseAddDigDomain = (source_addr, dns, domain) => {
   return new Promise((resolve, rejected) => {
+    console.log('quer_res===>>', `dig +short -b ${source_addr} @${dns} ${domain}`)
     process.exec(`dig +short -b ${source_addr} @${dns} ${domain}`, (err, stdout, stderr) => resolve())
   })
 }
