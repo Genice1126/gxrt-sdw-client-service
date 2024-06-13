@@ -76,6 +76,7 @@ module.exports = {
             const exec_res = await diagnoseCommand.diagnoseAddDigDomain(source_addr, file_json.diagnose_link_params.host[i], file_json.diagnose_link_params.domain);
             console.log('exec_res===>>', exec_res);
             const reg_res = exec_res.includes("timed out");
+            console.log('reg_res=====>>', reg_res);
             if(!reg_res) {
               this.count[file_json.interface_name] = 0;
               break;
