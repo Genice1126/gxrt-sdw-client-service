@@ -45,6 +45,7 @@ exports.readDir = async (filePath) => {
  */
 exports.writeFiles = async (filePath, fileName, content) => {
   if(typeof content !== 'string') throw new Error('文件写入格式不对')
+  fs.mkdir(filePath, {recursive: true});
   return fs.writeFile(path.join(filePath, fileName), content, { encoding: 'utf-8' });
 }
 /**
@@ -57,9 +58,7 @@ exports.appendFiles = async (filePath, fileName, content) => {
  * 删除文件
  */
 exports.deleteFiles = async (filePath, fileName) => {
-  console.log('filePath, fileName====>>', filePath, fileName);
   const is_exists = await this.existsFiles(filePath, fileName)
-  console.log('is_exists===>>', is_exists);
   if(is_exists) fs.unlink(path.join(filePath, fileName));
   return;
 }

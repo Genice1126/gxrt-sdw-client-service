@@ -275,10 +275,6 @@ exports.addDiagnoseLink = (client) => {
     await Helper.writeFiles(CONFIG.SCHEDULE_DIAGNOSE_LINK_PATH, `${data.interface_name}.txt`, JSON.stringify(data));
     console.log('--开始任务--')
     await schedule.diagnoseLinkScheduleTask.startAssignMission(client, `${data.interface_name}.txt`);
-    // await schedule.diagnoseLinkScheduleTask.stopMission();
-    // await Helper.deleteFiles('../schedule/self-starting-task', 'diagnose-link.txt');
-    // await Helper.writeFiles('../schedule/self-starting-task', 'diagnose-link.txt');
-    // await schedule.diagnoseLinkScheduleTask.startMission(client);
   })
 }
 //删除链路诊断
@@ -289,8 +285,6 @@ exports.deleteDiagnoseLink = (client) => {
     await schedule.diagnoseLinkScheduleTask.stopAssignMission(data.interface_name);
     console.log('--删除文件--')
     await Helper.deleteFiles(CONFIG.SCHEDULE_DIAGNOSE_LINK_PATH, `${data.interface_name}.txt`)
-    // await schedule.diagnoseLinkScheduleTask.stopMission();
-    // await Helper.deleteFiles('../schedule/self-starting-task', 'diagnose-link.txt');
   })
 }
 //添加NAT源地址转换
