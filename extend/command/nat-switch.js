@@ -7,9 +7,11 @@ const Helper = require('../helper');
 exports.natSwitchSourceAdd = (s_con_name, s_address, d_con_name, d_address, convert_s_address) => {
   return new Promise((resolve, rejected) => {
     let query_res = `iptables -t nat -A POSTROUTING`;
-    if(s_con_name && s_address) query_res += ` -i ${s_con_name} -s ${s_address}`
-    if(d_con_name && d_address) query_res += ` -o ${d_con_name} -d ${d_address}`
-    (convert_s_address) ? query_res += ` -j SNAT --to ${convert_s_address}` : `-j MASQUERADE`;
+    if(s_con_name) query_res += ` -i ${s_con_name}`;
+    if(s_address) query_res += ` -s ${s_address}`;
+    if(d_con_name) query_res += ` -o ${d_con_name}`;
+    if(d_address) query_res += ` -d ${d_address}`;
+    (convert_s_address) ? query_res += ` -j SNAT --to ${convert_s_address}` : ` -j MASQUERADE`;
     console.log('query_res ===>', query_res);
     process.exec(query_res, (err, stdout, stderr) => {
       process.exec(`netfilter-persistent save`, (err, stdout, stderr) => resolve())
@@ -26,7 +28,7 @@ exports.natSwitchSourceDelete = (s_con_name, s_address, d_con_name, d_address, c
     if(s_address) query_res += ` -s ${s_address}`;
     if(d_con_name) query_res += ` -o ${d_con_name}`;
     if(d_address) query_res += ` -d ${d_address}`;
-    (convert_s_address) ? query_res += ` -j SNAT --to ${convert_s_address}` : `-j MASQUERADE`;
+    (convert_s_address) ? query_res += ` -j SNAT --to ${convert_s_address}` : ` -j MASQUERADE`;
     console.log('query_res ===>', query_res);
     process.exec(query_res, (err, stdout, stderr) => {
       process.exec(`netfilter-persistent save`, (err, stdout, stderr) => resolve())
