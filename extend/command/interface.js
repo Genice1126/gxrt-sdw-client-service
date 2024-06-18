@@ -1,5 +1,62 @@
 const process = require('child_process');
 const Helper = require('../helper');
+
+/**
+ * 获取所有接口名称
+ */
+exports.interfaceAllName = () => {
+  return new Promise((resolve, rejected) => {
+    process.exec(`netstat -i | awk '{if(NR>2 && $1 != "lo") print $1}'`, (err, stdout, stderr) => {
+      (stdout) ? stdout = Helper.stringTrimLine(stdout) : stdout;
+      stdout = stdout.split("\n");
+      resolve(stdout);
+    })
+  })
+}
+/**
+ * 获取接口发送流量
+ */
+exports.interfaceRxFlowCollect = (con_name = "GE0") => {
+  return new Promise((resolve, rejected) => {
+    process.exec(`cat /sys/class/net/${con_name}/statistics/tx_bytes`, (err, stdout, stderr) => {
+      (stdout) ? stdout = Helper.stringTrimLine(stdout) : stdout;
+      resolve(stdout);
+    })
+  })
+}
+/**
+ * 获取接口发送包个数
+ */
+exports.interfaceRxPacketCollect = (con_name = "GE0") => {
+  return new Promise((resolve, rejected) => {
+    process.exec(`cat /sys/class/net/${con_name}/statistics/tx_packets`, (err, stdout, stderr) => {
+      (stdout) ? stdout = Helper.stringTrimLine(stdout) : stdout;
+      resolve(stdout);
+    })
+  })
+}
+/**
+ * 获取接口接收流量
+ */
+exports.interfaceTxFlowCollect = (con_name = "GE0") => {
+  return new Promise((resolve, rejected) => {
+    process.exec(`cat /sys/class/net/${con_name}/statistics/rx_bytes`, (err, stdout, stderr) => {
+      (stdout) ? stdout = Helper.stringTrimLine(stdout) : stdout;
+      resolve(stdout);
+    })
+  })
+}
+/**
+ * 获取接口接收包个数
+ */
+exports.interfaceTxPacketCollect = (con_name = "GE0") => {
+  return new Promise((resolve, rejected) => {
+    process.exec(`cat /sys/class/net/${con_name}/statistics/rx_packets`, (err, stdout, stderr) => {
+      (stdout) ? stdout = Helper.stringTrimLine(stdout) : stdout;
+      resolve(stdout);
+    })
+  })
+}
 /**
  * 获取网络端口类型(wan lan)
  */

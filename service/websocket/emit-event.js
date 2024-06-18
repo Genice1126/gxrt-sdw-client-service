@@ -15,3 +15,7 @@ exports.emitDiagnoseResult = (client, payload) => {
   console.log(`emitDiagnoseResult === payload : ${JSON.stringify(payload)}`)
   return client.emit(`wss:event:socket:node:diagnose:result`, payload);
 }
+exports.emitInterfaceFlowCollect = (client, payload) => {
+  console.log(`emitInterfaceFlowCollect === payload : ${JSON.stringify(payload)}`)
+  return client.emit(`wss:event:socket:node:interface:flow:collect`, payload);
+}

@@ -1,6 +1,6 @@
 const schedule = require('node-schedule');
 const EmitEvent = require('../websocket/emit-event');
-const {basicCommand, diagnoseCommand} = require('../../extend/command');
+const {basicCommand, interfaceCommand, diagnoseCommand} = require('../../extend/command');
 const Helper = require('../../extend/helper');
 const CONFIG = require('../../config/index');
 module.exports = {
@@ -133,6 +133,56 @@ module.exports = {
         delete this.count[key];
         console.log(`取消定时任务 ${key}`);
       });
+    }
+  },
+  interfaceFlowCollectScheduleTask: {
+    MAX_64BIT_UINT: Number.MAX_SAFE_INTEGER,  //18446744073709551615 最大字节数
+    flow_interval: 30,   //间隔时间
+    count: 0,
+    last: {},
+    job: null,
+    startMission: function(client) {
+      this.job = schedule.scheduleJob(`*/${this.flow_interval} * * * * *`, async () => {
+        const interface_name = await interfaceCommand.interfaceAllName();
+        for(let i = 0; i < interface_name.length; i++) {
+          let [rx_flow, rx_packet, tx_flow, tx_packet] = await Promise.all([
+            interfaceCommand.interfaceRxFlowCollect(interface_name[i]),
+            interfaceCommand.interfaceRxPacketCollect(interface_name[i]),
+            interfaceCommand.interfaceTxFlowCollect(interface_name[i]),
+            interfaceCommand.interfaceTxPacketCollect(interface_name[i])
+          ])
+          console.log('rx_flow 1==> ', rx_flow)
+          console.log('rx_packet 1==> ', rx_packet)
+          console.log('tx_flow 1==> ', tx_flow)
+          console.log('tx_packet 1==> ', tx_packet)
+          if(!this.last[interface_name[i]]) {
+            this.last[interface_name[i]].rx_flow = rx_flow;
+            this.last[interface_name[i]].rx_packet = rx_packet;
+            this.last[interface_name[i]].tx_flow = tx_flow;
+            this.last[interface_name[i]].tx_packet = tx_packet;
+          } else {
+            (rx_flow < this.last[interface_name[i]].rx_flow) ? rx_flow = (this.MAX_64BIT_UINT - this.last[interface_name[i]].rx_flow) + rx_flow : rx_flow = rx_flow - this.last[interface_name[i]].rx_flow;
+            (rx_packet < this.last[interface_name[i]].rx_packet) ? rx_packet = (this.MAX_64BIT_UINT - this.last[interface_name[i]].rx_packet) + rx_packet : rx_packet = rx_packet - this.last[interface_name[i]].rx_packet;
+            (tx_flow < this.last[interface_name[i]].tx_flow) ? tx_flow = (this.MAX_64BIT_UINT - this.last[interface_name[i]].tx_flow) + tx_flow : tx_flow = tx_flow - this.last[interface_name[i]].tx_flow;
+            (tx_packet < this.last[interface_name[i]].tx_packet) ? tx_packet = (this.MAX_64BIT_UINT - this.last[interface_name[i]].tx_packet) + tx_packet : tx_packet = tx_packet - this.last[interface_name[i]].tx_packet;
+            console.log('rx_flow 2==> ', rx_flow)
+            console.log('rx_packet 2==> ', rx_packet)
+            console.log('tx_flow 2==> ', tx_flow)
+            console.log('tx_packet 2==> ', tx_packet)
+            const exec_res = {
+              interface_name: interface_name[i], 
+              tx_flow: (tx_flow * 8) / this.flow_interval, 
+              tx_packet: tx_packet / this.flow_interval, 
+              rx_flow: (rx_flow * 8) / this.flow_interval,
+              rx_packet: rx_packet / this.flow_interval
+            }
+            EmitEvent.emitInterfaceFlowCollect(client, exec_res)
+          } 
+        }
+      });
+    },
+    stopMission: function() {
+      schedule.cancelJob(this.job);
     }
   }
 }
