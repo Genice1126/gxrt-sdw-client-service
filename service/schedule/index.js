@@ -146,34 +146,21 @@ module.exports = {
         const vmnic_count = await basicCommand.vmnicCount();
         const virtual_name = await interfaceCommand.interfaceVirtualName();
         const interface_name = Array.from({ length: vmnic_count }, (_, i) => `GE${i}`);
-        const interface_array = interface_name.concat(virtual_name);
-        console.log('interface_array===>>', interface_array);        
+        const interface_array = interface_name.concat(virtual_name); 
         for(let i = 0; i < interface_array.length; i++) {
-          console.log('当前接口 ==========  ', interface_array[i])
           let [rx_flow, rx_packet, tx_flow, tx_packet] = await Promise.all([
-            interfaceCommand.interfaceRxFlowCollect(interface_array[i]),
-            interfaceCommand.interfaceRxPacketCollect(interface_array[i]),
-            interfaceCommand.interfaceTxFlowCollect(interface_array[i]),
-            interfaceCommand.interfaceTxPacketCollect(interface_array[i])
+            interfaceCommand.interfaceRxFlow(interface_array[i]),
+            interfaceCommand.interfaceRxPacket(interface_array[i]),
+            interfaceCommand.interfaceTxFlow(interface_array[i]),
+            interfaceCommand.interfaceTxPacket(interface_array[i])
           ])
-          console.log('本次结果===============================');
-          console.log('rx_flow 1==> ', rx_flow);
-          console.log('rx_packet 1==> ', rx_packet);
-          console.log('tx_flow 1==> ', tx_flow);
-          console.log('tx_packet 1==> ', tx_packet);
           if(!this.last[interface_array[i]]) {
-            console.log('==========第一次===============');
             this.last[interface_array[i]] = {};
             this.last[interface_array[i]].rx_flow = rx_flow;
             this.last[interface_array[i]].rx_packet = rx_packet;
             this.last[interface_array[i]].tx_flow = tx_flow;
             this.last[interface_array[i]].tx_packet = tx_packet;
           } else {
-            console.log('上次次结果===============================')
-            console.log('rx_flow 1==> ', this.last[interface_array[i]].rx_flow);
-            console.log('rx_packet 1==> ', this.last[interface_array[i]].rx_packet);
-            console.log('tx_flow 1==> ', this.last[interface_array[i]].tx_flow);
-            console.log('tx_packet 1==> ', this.last[interface_array[i]].tx_packet);
             let cur_rx_flow, cur_rx_packet, cur_tx_flow, cur_tx_packet;
             (rx_flow < this.last[interface_array[i]].rx_flow) ? cur_rx_flow = (this.MAX_64BIT_UINT - this.last[interface_array[i]].rx_flow) + rx_flow : cur_rx_flow = rx_flow - this.last[interface_array[i]].rx_flow;
             (rx_packet < this.last[interface_array[i]].rx_packet) ? cur_rx_packet = (this.MAX_64BIT_UINT - this.last[interface_array[i]].rx_packet) + rx_packet : cur_rx_packet = rx_packet - this.last[interface_array[i]].rx_packet;
@@ -190,7 +177,7 @@ module.exports = {
               rx_flow: Math.ceil((cur_rx_flow * 8) / this.flow_interval),
               rx_packet: Math.ceil(cur_rx_packet / this.flow_interval)
             }
-            EmitEvent.emitInterfaceFlowCollect(client, exec_res)
+            EmitEvent.emitInterfaceFlow(client, exec_res)
           } 
         }
       });

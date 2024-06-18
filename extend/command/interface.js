@@ -15,7 +15,7 @@ exports.interfaceVirtualName = () => {
 /**
  * 获取接口发送流量
  */
-exports.interfaceRxFlowCollect = (con_name = "GE0") => {
+exports.interfaceRxFlow = (con_name = "GE0") => {
   return new Promise((resolve, rejected) => {
     process.exec(`cat /sys/class/net/${con_name}/statistics/tx_bytes`, (err, stdout, stderr) => {
       (stdout) ? stdout = Helper.stringTrimLine(stdout) : stdout;
@@ -26,7 +26,7 @@ exports.interfaceRxFlowCollect = (con_name = "GE0") => {
 /**
  * 获取接口发送包个数
  */
-exports.interfaceRxPacketCollect = (con_name = "GE0") => {
+exports.interfaceRxPacket = (con_name = "GE0") => {
   return new Promise((resolve, rejected) => {
     process.exec(`cat /sys/class/net/${con_name}/statistics/tx_packets`, (err, stdout, stderr) => {
       (stdout) ? stdout = Helper.stringTrimLine(stdout) : stdout;
@@ -37,7 +37,7 @@ exports.interfaceRxPacketCollect = (con_name = "GE0") => {
 /**
  * 获取接口接收流量
  */
-exports.interfaceTxFlowCollect = (con_name = "GE0") => {
+exports.interfaceTxFlow = (con_name = "GE0") => {
   return new Promise((resolve, rejected) => {
     process.exec(`cat /sys/class/net/${con_name}/statistics/rx_bytes`, (err, stdout, stderr) => {
       (stdout) ? stdout = Helper.stringTrimLine(stdout) : stdout;
@@ -48,7 +48,7 @@ exports.interfaceTxFlowCollect = (con_name = "GE0") => {
 /**
  * 获取接口接收包个数
  */
-exports.interfaceTxPacketCollect = (con_name = "GE0") => {
+exports.interfaceTxPacket = (con_name = "GE0") => {
   return new Promise((resolve, rejected) => {
     process.exec(`cat /sys/class/net/${con_name}/statistics/rx_packets`, (err, stdout, stderr) => {
       (stdout) ? stdout = Helper.stringTrimLine(stdout) : stdout;
