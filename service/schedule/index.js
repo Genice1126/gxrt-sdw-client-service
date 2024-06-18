@@ -160,6 +160,7 @@ module.exports = {
           console.log('tx_flow 1==> ', tx_flow)
           console.log('tx_packet 1==> ', tx_packet)
           if(!this.last[interface_array[i]]) {
+            this.last[interface_array[i]] = {};
             this.last[interface_array[i]].rx_flow = rx_flow;
             this.last[interface_array[i]].rx_packet = rx_packet;
             this.last[interface_array[i]].tx_flow = tx_flow;
