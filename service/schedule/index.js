@@ -137,12 +137,12 @@ module.exports = {
   },
   interfaceFlowCollectScheduleTask: {
     MAX_64BIT_UINT: Number.MAX_SAFE_INTEGER,  //18446744073709551615 最大字节数
-    flow_interval: 30,   //间隔时间
+    flow_interval: 60,   //间隔时间
     count: 0,
     last: {},
     job: null,
     startMission: function(client) {
-      this.job = schedule.scheduleJob(`*/${this.flow_interval} * * * * *`, async () => {
+      this.job = schedule.scheduleJob(`* * * * *`, async () => {
         const vmnic_count = await basicCommand.vmnicCount();
         const virtual_name = await interfaceCommand.interfaceVirtualName();
         const interface_name = Array.from({ length: vmnic_count }, (_, i) => `GE${i}`);
