@@ -2,13 +2,12 @@ const process = require('child_process');
 const Helper = require('../helper');
 
 /**
- * 获取所有接口名称
+ * 获取所有虚拟接口名称
  */
-exports.interfaceAllName = () => {
+exports.interfaceVirtualName = () => {
   return new Promise((resolve, rejected) => {
-    process.exec(`netstat -i | awk '{if(NR>2 && $1 != "lo") print $1}'`, (err, stdout, stderr) => {
-      (stdout) ? stdout = Helper.stringTrimLine(stdout) : stdout;
-      stdout = stdout.split("\n");
+    process.exec(`ls /sys/class/net | grep -E 'wg'`, (err, stdout, stderr) => {
+      (stdout) ? stdout = stdout.split("\n") : [];
       resolve(stdout);
     })
   })

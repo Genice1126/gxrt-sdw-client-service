@@ -143,34 +143,38 @@ module.exports = {
     job: null,
     startMission: function(client) {
       this.job = schedule.scheduleJob(`*/${this.flow_interval} * * * * *`, async () => {
-        const interface_name = await interfaceCommand.interfaceAllName();
-        for(let i = 0; i < interface_name.length; i++) {
+        const vmnic_count = await basicCommand.vmnicCount();
+        const virtual_name = await interfaceCommand.interfaceVirtualName();
+        const interface_name = Array.from({ length: vmnic_count }, (_, i) => `GE${i}`);
+        const interface_array = interface_name.concat(virtual_name);
+        console.log('interface_array===>>', interface_array);        
+        for(let i = 0; i < interface_array.length; i++) {
           let [rx_flow, rx_packet, tx_flow, tx_packet] = await Promise.all([
-            interfaceCommand.interfaceRxFlowCollect(interface_name[i]),
-            interfaceCommand.interfaceRxPacketCollect(interface_name[i]),
-            interfaceCommand.interfaceTxFlowCollect(interface_name[i]),
-            interfaceCommand.interfaceTxPacketCollect(interface_name[i])
+            interfaceCommand.interfaceRxFlowCollect(interface_array[i]),
+            interfaceCommand.interfaceRxPacketCollect(interface_array[i]),
+            interfaceCommand.interfaceTxFlowCollect(interface_array[i]),
+            interfaceCommand.interfaceTxPacketCollect(interface_array[i])
           ])
           console.log('rx_flow 1==> ', rx_flow)
           console.log('rx_packet 1==> ', rx_packet)
           console.log('tx_flow 1==> ', tx_flow)
           console.log('tx_packet 1==> ', tx_packet)
-          if(!this.last[interface_name[i]]) {
-            this.last[interface_name[i]].rx_flow = rx_flow;
-            this.last[interface_name[i]].rx_packet = rx_packet;
-            this.last[interface_name[i]].tx_flow = tx_flow;
-            this.last[interface_name[i]].tx_packet = tx_packet;
+          if(!this.last[interface_array[i]]) {
+            this.last[interface_array[i]].rx_flow = rx_flow;
+            this.last[interface_array[i]].rx_packet = rx_packet;
+            this.last[interface_array[i]].tx_flow = tx_flow;
+            this.last[interface_array[i]].tx_packet = tx_packet;
           } else {
-            (rx_flow < this.last[interface_name[i]].rx_flow) ? rx_flow = (this.MAX_64BIT_UINT - this.last[interface_name[i]].rx_flow) + rx_flow : rx_flow = rx_flow - this.last[interface_name[i]].rx_flow;
-            (rx_packet < this.last[interface_name[i]].rx_packet) ? rx_packet = (this.MAX_64BIT_UINT - this.last[interface_name[i]].rx_packet) + rx_packet : rx_packet = rx_packet - this.last[interface_name[i]].rx_packet;
-            (tx_flow < this.last[interface_name[i]].tx_flow) ? tx_flow = (this.MAX_64BIT_UINT - this.last[interface_name[i]].tx_flow) + tx_flow : tx_flow = tx_flow - this.last[interface_name[i]].tx_flow;
-            (tx_packet < this.last[interface_name[i]].tx_packet) ? tx_packet = (this.MAX_64BIT_UINT - this.last[interface_name[i]].tx_packet) + tx_packet : tx_packet = tx_packet - this.last[interface_name[i]].tx_packet;
+            (rx_flow < this.last[interface_array[i]].rx_flow) ? rx_flow = (this.MAX_64BIT_UINT - this.last[interface_array[i]].rx_flow) + rx_flow : rx_flow = rx_flow - this.last[interface_array[i]].rx_flow;
+            (rx_packet < this.last[interface_array[i]].rx_packet) ? rx_packet = (this.MAX_64BIT_UINT - this.last[interface_array[i]].rx_packet) + rx_packet : rx_packet = rx_packet - this.last[interface_array[i]].rx_packet;
+            (tx_flow < this.last[interface_array[i]].tx_flow) ? tx_flow = (this.MAX_64BIT_UINT - this.last[interface_array[i]].tx_flow) + tx_flow : tx_flow = tx_flow - this.last[interface_array[i]].tx_flow;
+            (tx_packet < this.last[interface_array[i]].tx_packet) ? tx_packet = (this.MAX_64BIT_UINT - this.last[interface_array[i]].tx_packet) + tx_packet : tx_packet = tx_packet - this.last[interface_array[i]].tx_packet;
             console.log('rx_flow 2==> ', rx_flow)
             console.log('rx_packet 2==> ', rx_packet)
             console.log('tx_flow 2==> ', tx_flow)
             console.log('tx_packet 2==> ', tx_packet)
             const exec_res = {
-              interface_name: interface_name[i], 
+              interface_name: interface_array[i], 
               tx_flow: (tx_flow * 8) / this.flow_interval, 
               tx_packet: tx_packet / this.flow_interval, 
               rx_flow: (rx_flow * 8) / this.flow_interval,
