@@ -178,6 +178,12 @@ module.exports = {
             (rx_packet < this.last[interface_array[i]].rx_packet) ? rx_packet = (this.MAX_64BIT_UINT - this.last[interface_array[i]].rx_packet) + rx_packet : rx_packet = rx_packet - this.last[interface_array[i]].rx_packet;
             (tx_flow < this.last[interface_array[i]].tx_flow) ? tx_flow = (this.MAX_64BIT_UINT - this.last[interface_array[i]].tx_flow) + tx_flow : tx_flow = tx_flow - this.last[interface_array[i]].tx_flow;
             (tx_packet < this.last[interface_array[i]].tx_packet) ? tx_packet = (this.MAX_64BIT_UINT - this.last[interface_array[i]].tx_packet) + tx_packet : tx_packet = tx_packet - this.last[interface_array[i]].tx_packet;
+            this.last[interface_array[i]].rx_flow = rx_flow;
+            this.last[interface_array[i]].rx_packet = rx_packet;
+            this.last[interface_array[i]].tx_flow = tx_flow;
+            this.last[interface_array[i]].tx_packet = tx_packet;
+
+
             console.log('rx_flow 2==> ', rx_flow);
             console.log('rx_packet 2==> ', rx_packet);
             console.log('tx_flow 2==> ', tx_flow);
