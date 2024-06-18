@@ -176,10 +176,10 @@ module.exports = {
             console.log('tx_packet 2==> ', tx_packet)
             const exec_res = {
               interface_name: interface_array[i], 
-              tx_flow: (tx_flow * 8) / this.flow_interval, 
-              tx_packet: tx_packet / this.flow_interval, 
-              rx_flow: (rx_flow * 8) / this.flow_interval,
-              rx_packet: rx_packet / this.flow_interval
+              tx_flow: Math.ceil((tx_flow * 8) / this.flow_interval), 
+              tx_packet: Math.ceil(tx_packet / this.flow_interval), 
+              rx_flow: Math.ceil((rx_flow * 8) / this.flow_interval),
+              rx_packet: Math.ceil(rx_packet / this.flow_interval)
             }
             EmitEvent.emitInterfaceFlowCollect(client, exec_res)
           } 

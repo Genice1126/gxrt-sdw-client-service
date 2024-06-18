@@ -7,7 +7,8 @@ const Helper = require('../helper');
 exports.interfaceVirtualName = () => {
   return new Promise((resolve, rejected) => {
     process.exec(`ls /sys/class/net | grep -E 'wg'`, (err, stdout, stderr) => {
-      (stdout) ? stdout = stdout.split("\n") : [];
+      const filteredArray = array.filter(item => item !== '');
+      (stdout) ? stdout = stdout.split("\n").filter(item => item !== '') : [];
       resolve(stdout);
     })
   })
