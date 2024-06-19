@@ -143,7 +143,7 @@ module.exports = {
     job: null,
     startMission: function(client) {
       this.job = schedule.scheduleJob(`* * * * *`, async () => {
-        const date = new Date().getTime();
+        const date = (Math.floor(new Date().getTime() / 1000)) * 1000;
         const vmnic_count = await basicCommand.vmnicCount();
         const virtual_name = await interfaceCommand.interfaceVirtualName();
         const interface_name = Array.from({ length: vmnic_count }, (_, i) => `GE${i}`);
