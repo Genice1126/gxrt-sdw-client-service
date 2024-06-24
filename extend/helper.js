@@ -38,6 +38,7 @@ exports.existsFiles = async (filePath, fileName) => {
  * 读取文件夹中的所有文件名
  */
 exports.readDir = async (filePath) => {
+  fs.mkdir(filePath, {recursive: true});
   return fs.readdir(filePath);
 }
 /**
