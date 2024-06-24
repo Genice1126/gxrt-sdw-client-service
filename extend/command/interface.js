@@ -17,7 +17,7 @@ exports.interfaceVirtualName = () => {
  */
 exports.interfaceRxFlow = (con_name = "GE0") => {
   return new Promise((resolve, rejected) => {
-    process.exec(`cat /sys/class/net/${con_name}/statistics/tx_bytes`, (err, stdout, stderr) => {
+    process.exec(`cat /sys/class/net/${con_name}/statistics/rx_bytes`, (err, stdout, stderr) => {
       (stdout) ? stdout = Helper.stringTrimLine(stdout) : stdout;
       resolve(stdout);
     })
@@ -28,7 +28,7 @@ exports.interfaceRxFlow = (con_name = "GE0") => {
  */
 exports.interfaceRxPacket = (con_name = "GE0") => {
   return new Promise((resolve, rejected) => {
-    process.exec(`cat /sys/class/net/${con_name}/statistics/tx_packets`, (err, stdout, stderr) => {
+    process.exec(`cat /sys/class/net/${con_name}/statistics/rx_packets`, (err, stdout, stderr) => {
       (stdout) ? stdout = Helper.stringTrimLine(stdout) : stdout;
       resolve(stdout);
     })
@@ -39,7 +39,7 @@ exports.interfaceRxPacket = (con_name = "GE0") => {
  */
 exports.interfaceTxFlow = (con_name = "GE0") => {
   return new Promise((resolve, rejected) => {
-    process.exec(`cat /sys/class/net/${con_name}/statistics/rx_bytes`, (err, stdout, stderr) => {
+    process.exec(`cat /sys/class/net/${con_name}/statistics/tx_bytes`, (err, stdout, stderr) => {
       (stdout) ? stdout = Helper.stringTrimLine(stdout) : stdout;
       resolve(stdout);
     })
@@ -50,7 +50,7 @@ exports.interfaceTxFlow = (con_name = "GE0") => {
  */
 exports.interfaceTxPacket = (con_name = "GE0") => {
   return new Promise((resolve, rejected) => {
-    process.exec(`cat /sys/class/net/${con_name}/statistics/rx_packets`, (err, stdout, stderr) => {
+    process.exec(`cat /sys/class/net/${con_name}/statistics/tx_packets`, (err, stdout, stderr) => {
       (stdout) ? stdout = Helper.stringTrimLine(stdout) : stdout;
       resolve(stdout);
     })
