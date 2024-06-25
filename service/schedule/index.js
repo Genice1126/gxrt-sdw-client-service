@@ -136,7 +136,7 @@ module.exports = {
     }
   },
   interfaceFlowScheduleTask: {
-    MAX_64BIT_UINT: Number.MAX_SAFE_INTEGER,  //18446744073709551615 最大字节数
+    MAX_64BIT_UINT: BigInt(Number.MAX_SAFE_INTEGER),  //18446744073709551615 最大字节数
     flow_interval: 60,   //间隔时间
     count: 0,
     last: {},
@@ -144,6 +144,7 @@ module.exports = {
     startMission: function(client) {
       this.job = schedule.scheduleJob(`* * * * *`, async () => {
         const date = (Math.floor(new Date().getTime() / 1000)) * 1000;
+        console.log('date====>>>', date);
         const vmnic_count = await basicCommand.vmnicCount();
         const virtual_name = await interfaceCommand.interfaceVirtualName();
         const interface_name = Array.from({ length: vmnic_count }, (_, i) => `GE${i}`);
@@ -155,6 +156,10 @@ module.exports = {
             interfaceCommand.interfaceTxFlow(interface_array[i]),
             interfaceCommand.interfaceTxPacket(interface_array[i])
           ])
+          rx_flow = BigInt(rx_flow), rx_packet = BigInt(rx_packet), tx_flow = BigInt(tx_flow), tx_packet = BigInt(tx_packet);
+          
+          console.log('the - rx - flow - packet - tx - flow - packet : ', rx_flow, rx_packet, tx_flow, tx_packet);
+
           if(!this.last[interface_array[i]]) {
             this.last[interface_array[i]] = {};
             this.last[interface_array[i]].rx_flow = rx_flow;
@@ -162,6 +167,7 @@ module.exports = {
             this.last[interface_array[i]].tx_flow = tx_flow;
             this.last[interface_array[i]].tx_packet = tx_packet;
           } else {
+            console.log('last - rx - flow - packet - tx - flow - packet : ', this.last[interface_array[i]].rx_flow, this.last[interface_array[i]].rx_packet, this.last[interface_array[i]].tx_flow, this.last[interface_array[i]].tx_packet)
             let cur_rx_flow, cur_rx_packet, cur_tx_flow, cur_tx_packet;
             (rx_flow < this.last[interface_array[i]].rx_flow) ? cur_rx_flow = (this.MAX_64BIT_UINT - this.last[interface_array[i]].rx_flow) + rx_flow : cur_rx_flow = rx_flow - this.last[interface_array[i]].rx_flow;
             (rx_packet < this.last[interface_array[i]].rx_packet) ? cur_rx_packet = (this.MAX_64BIT_UINT - this.last[interface_array[i]].rx_packet) + rx_packet : cur_rx_packet = rx_packet - this.last[interface_array[i]].rx_packet;
@@ -173,10 +179,10 @@ module.exports = {
             this.last[interface_array[i]].tx_packet = tx_packet;
             const exec_res = {
               interface_name: interface_array[i], 
-              tx_flow: Math.ceil((cur_tx_flow * 8) / this.flow_interval), 
-              tx_packet: Math.ceil(cur_tx_packet / this.flow_interval), 
-              rx_flow: Math.ceil((cur_rx_flow * 8) / this.flow_interval),
-              rx_packet: Math.ceil(cur_rx_packet / this.flow_interval),
+              tx_flow: Math.ceil((Number(cur_tx_flow) * 8) / this.flow_interval), 
+              tx_packet: Math.ceil(Number(cur_tx_packet) / this.flow_interval), 
+              rx_flow: Math.ceil((Number(cur_rx_flow) * 8) / this.flow_interval),
+              rx_packet: Math.ceil(Number(cur_rx_packet) / this.flow_interval),
               create_time: date
             }
             EmitEvent.emitInterfaceFlow(client, exec_res)
