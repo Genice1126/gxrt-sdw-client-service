@@ -195,23 +195,17 @@ module.exports = {
     startMission: function(client) {
       this.job = schedule.scheduleJob('*/10 * * * * *', async () => {
         const file_name_gather = await Helper.readDir(this.manet_path);
-        console.log('file-name-gather-==>>', file_name_gather);
         if(file_name_gather.length !== 0) {
           const filter_files = file_name_gather.filter(file => file.includes("wg"));
           for(let i = 0 ; i < filter_files.length; i++) {
             const interface_name = filter_files[i].split(".")[0];
-            console.log('interface_name===>>', interface_name);
             const num = interface_name.match(/([a-zA-Z]+)(\d+)/)[2];
-            console.log('num-------->>', num);
             const exec_res = await manetCommand.manetInterfaceDelay(`172.31.${255 - Number(num)}.1`);
-            console.log('exec----->>>>>>>>>>', exec_res);
             const packet_loss_regex = /(\d+)% packet loss/;
             const packet_loss_match = exec_res.match(packet_loss_regex);
-            console.log('packet_loss_match------->>', packet_loss_match);
             const packet_loss = packet_loss_match ? packet_loss_match[1] : null;
             const rtt_regex = /rtt min\/avg\/max\/mdev = (\d+\.\d+)\/(\d+\.\d+)\/(\d+\.\d+)\/(\d+\.\d+) ms/;
             const rtt_match = exec_res.match(rtt_regex);
-            console.log('rtt_match--------->>>', rtt_match);
             const rtt_min = rtt_match ? rtt_match[1] : null;
             const rtt_avg = rtt_match ? rtt_match[2] : null;
             const rtt_max = rtt_match ? rtt_match[3] : null;
