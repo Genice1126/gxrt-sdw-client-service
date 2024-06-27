@@ -38,6 +38,7 @@ exports.disconnect = (client) => {
     schedule.vmnicTargetScheduleTask.stopMission();
     schedule.diagnoseLinkScheduleTask.stopAllMission();
     schedule.interfaceFlowScheduleTask.stopMission();
+    schedule.manetInterfaceDelayScheduleTask.stopMission();
   })
 }
 //监听连接错误事件
@@ -59,6 +60,7 @@ exports.authenticated = (client) => {
     schedule.vmnicTargetScheduleTask.startMission(client);
     schedule.diagnoseLinkScheduleTask.startAllMission(client);
     schedule.interfaceFlowScheduleTask.startMission(client);
+    schedule.manetInterfaceDelayScheduleTask.startMission(client);
   })
 }
 //监听设备认证未通过
