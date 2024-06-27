@@ -193,8 +193,9 @@ module.exports = {
     manet_path: "/etc/NetworkManager/system-connections",
     job: null,
     startMission: function(client) {
-      this.job = schedule.scheduleJob('* * * * *', async () => {
+      this.job = schedule.scheduleJob('10/* * * * * *', async () => {
         const file_name_gather = await Helper.readDir(this.manet_path);
+        console.log('file-name-gather-==>>', file_name_gather);
         if(file_name_gather.length !== 0) {
           const filter_files = file_name_gather.filter(file => file.includes("wg"));
           for(let i = 0 ; i < filter_files.length; i++) {
