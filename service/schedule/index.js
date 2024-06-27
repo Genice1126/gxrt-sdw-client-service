@@ -201,6 +201,7 @@ module.exports = {
           for(let i = 0 ; i < filter_files.length; i++) {
             const interface_name = filter_files[i].split(".")[0];
             const num = interface_name.match(/([a-zA-Z]+)(\d+)/);
+            console.log('num-------->>', num);
             const exec_res = await manetCommand.manetInterfaceDelay(`172.31.${255 - num}.1`);
             console.log('exec----->>>>>>>>>>', exec_res);
             const packet_loss_regex = /(\d+)% packet loss/;

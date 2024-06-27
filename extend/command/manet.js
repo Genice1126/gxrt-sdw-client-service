@@ -81,6 +81,7 @@ exports.manetDeleteBranch = (con_name = "GE0") => {
  */
 exports.manetInterfaceDelay = (addr) => {
   return new Promise((resolve, rejected) => {
+    console.log('addr----->>', addr);
     process.exec(`ping ${addr} -c 5 -q`, (err, stdout, stderr) => resolve(stdout));
   })
 }
