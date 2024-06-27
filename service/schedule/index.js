@@ -202,11 +202,14 @@ module.exports = {
             const interface_name = filter_files[i].split(".")[0];
             const num = interface_name.match(/([a-zA-Z]+)(\d+)/);
             const exec_res = await manetCommand.manetInterfaceDelay(`172.31.${255 - num}.1`);
+            console.log('exec----->>>>>>>>>>', exec_res);
             const packet_loss_regex = /(\d+)% packet loss/;
             const packet_loss_match = exec_res.match(packet_loss_regex);
+            console.log('packet_loss_match------->>', packet_loss_match);
             const packet_loss = packet_loss_match ? packet_loss_match[1] : null;
             const rtt_regex = /rtt min\/avg\/max\/mdev = (\d+\.\d+)\/(\d+\.\d+)\/(\d+\.\d+)\/(\d+\.\d+) ms/;
             const rtt_match = exec_res.match(rtt_regex);
+            console.log('rtt_match--------->>>', rtt_match);
             const rtt_min = rtt_match ? rtt_match[1] : null;
             const rtt_avg = rtt_match ? rtt_match[2] : null;
             const rtt_max = rtt_match ? rtt_match[3] : null;
