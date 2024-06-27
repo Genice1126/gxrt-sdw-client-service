@@ -193,7 +193,7 @@ module.exports = {
     manet_path: "/etc/NetworkManager/system-connections",
     job: null,
     startMission: function(client) {
-      this.job = schedule.scheduleJob('10/* * * * * *', async () => {
+      this.job = schedule.scheduleJob('*/10 * * * * *', async () => {
         const file_name_gather = await Helper.readDir(this.manet_path);
         console.log('file-name-gather-==>>', file_name_gather);
         if(file_name_gather.length !== 0) {
