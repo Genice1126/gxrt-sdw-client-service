@@ -200,6 +200,7 @@ module.exports = {
           const filter_files = file_name_gather.filter(file => file.includes("wg"));
           for(let i = 0 ; i < filter_files.length; i++) {
             const interface_name = filter_files[i].split(".")[0];
+            console.log('interface_name===>>', interface_name);
             const num = interface_name.match(/([a-zA-Z]+)(\d+)/);
             console.log('num-------->>', num);
             const exec_res = await manetCommand.manetInterfaceDelay(`172.31.${255 - num}.1`);
