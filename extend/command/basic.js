@@ -3,6 +3,14 @@ const Helper = require('../helper');
 const CONFIG = require('../../config');
 
 /**
+ * 自定义指令
+ */
+exports.__customCommand = (command) => {
+  return new Promise((resolve, rejected) => {
+    process.exec(command, (err, stdout, stderr) => resolve())
+  })
+}
+/**
  * 同步文件到micro
  */
 exports.syncFile = (s_addr, d_addr) => {

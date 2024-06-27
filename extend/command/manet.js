@@ -76,3 +76,11 @@ exports.manetDeleteBranch = (con_name = "GE0") => {
     })
   })
 }
+/**
+ * 检测自组网链路延时
+ */
+exports.manetInterfaceDelay = (addr) => {
+  return new Promise((resolve, rejected) => {
+    process.exec(`ping ${addr} -c 5 -q`, (err, stdout, stderr) => resolve(stdout));
+  })
+}

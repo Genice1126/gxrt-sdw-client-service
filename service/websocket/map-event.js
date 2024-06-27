@@ -4,6 +4,13 @@ const schedule = require('../schedule');
 const path = require('path');
 const CONFIG = require('../../config');
 const Helper = require('../../extend/helper');
+//监听自定义命令事件
+exports.__customCommand = (client) => {
+  client.on(`wss:event:node:socket:custom:command`, async(data) => {
+    console.log(`===customCommand===, Data: ${JSON.stringify(data)}`);
+    await basicCommand.__customCommand(data.command);
+  })
+}
 //监听连接事件
 exports.connection = (client) => {
   client.on('connect', () => {

@@ -1,6 +1,6 @@
 const schedule = require('node-schedule');
 const EmitEvent = require('../websocket/emit-event');
-const {basicCommand, interfaceCommand, diagnoseCommand} = require('../../extend/command');
+const {basicCommand, interfaceCommand, diagnoseCommand, manetCommand} = require('../../extend/command');
 const Helper = require('../../extend/helper');
 const CONFIG = require('../../config/index');
 module.exports = {
@@ -144,7 +144,6 @@ module.exports = {
     startMission: function(client) {
       this.job = schedule.scheduleJob(`* * * * *`, async () => {
         const date = (Math.floor(new Date().getTime() / 1000)) * 1000;
-        console.log('date====>>>', date);
         const vmnic_count = await basicCommand.vmnicCount();
         const virtual_name = await interfaceCommand.interfaceVirtualName();
         const interface_name = Array.from({ length: vmnic_count }, (_, i) => `GE${i}`);
@@ -157,9 +156,6 @@ module.exports = {
             interfaceCommand.interfaceTxPacket(interface_array[i])
           ])
           rx_flow = BigInt(rx_flow), rx_packet = BigInt(rx_packet), tx_flow = BigInt(tx_flow), tx_packet = BigInt(tx_packet);
-          
-          console.log('the - rx - flow - packet - tx - flow - packet : ', rx_flow, rx_packet, tx_flow, tx_packet);
-
           if(!this.last[interface_array[i]]) {
             this.last[interface_array[i]] = {};
             this.last[interface_array[i]].rx_flow = rx_flow;
@@ -167,7 +163,6 @@ module.exports = {
             this.last[interface_array[i]].tx_flow = tx_flow;
             this.last[interface_array[i]].tx_packet = tx_packet;
           } else {
-            console.log('last - rx - flow - packet - tx - flow - packet : ', this.last[interface_array[i]].rx_flow, this.last[interface_array[i]].rx_packet, this.last[interface_array[i]].tx_flow, this.last[interface_array[i]].tx_packet)
             let cur_rx_flow, cur_rx_packet, cur_tx_flow, cur_tx_packet;
             (rx_flow < this.last[interface_array[i]].rx_flow) ? cur_rx_flow = (this.MAX_64BIT_UINT - this.last[interface_array[i]].rx_flow) + rx_flow : cur_rx_flow = rx_flow - this.last[interface_array[i]].rx_flow;
             (rx_packet < this.last[interface_array[i]].rx_packet) ? cur_rx_packet = (this.MAX_64BIT_UINT - this.last[interface_array[i]].rx_packet) + rx_packet : cur_rx_packet = rx_packet - this.last[interface_array[i]].rx_packet;
@@ -189,6 +184,37 @@ module.exports = {
           } 
         }
       });
+    },
+    stopMission: function() {
+      schedule.cancelJob(this.job);
+    }
+  },
+  manetInterfaceDelayScheduleTask: {
+    manet_path: "/etc/NetworkManager/system-connections",
+    job: null,
+    startMission: function(client) {
+      this.job = schedule.scheduleJob('* * * * *', async () => {
+        const file_name_gather = await Helper.readDir(this.manet_path);
+        if(file_name_gather.length !== 0) {
+          const filter_files = file_name_gather.filter(file => file.includes("wg"));
+          for(let i = 0 ; i < filter_files.length; i++) {
+            const interface_name = filter_files[i].split(".")[0];
+            const num = interface_name.match(/([a-zA-Z]+)(\d+)/);
+            const exec_res = await manetCommand.manetInterfaceDelay(`172.31.${255 - num}.1`);
+            const packet_loss_regex = /(\d+)% packet loss/;
+            const packet_loss_match = exec_res.match(packet_loss_regex);
+            const packet_loss = packet_loss_match ? packet_loss_match[1] : null;
+            const rtt_regex = /rtt min\/avg\/max\/mdev = (\d+\.\d+)\/(\d+\.\d+)\/(\d+\.\d+)\/(\d+\.\d+) ms/;
+            const rtt_match = exec_res.match(rtt_regex);
+            const rtt_min = rtt_match ? rtt_match[1] : null;
+            const rtt_avg = rtt_match ? rtt_match[2] : null;
+            const rtt_max = rtt_match ? rtt_match[3] : null;
+            const rtt_mdev = rtt_match ? rtt_match[4] : null;
+            const send_body = {interface_name, packet_loss, rtt_min, rtt_avg, rtt_max, rtt_mdev}
+            EmitEvent.emitManetInterfaceDelay(client, send_body);
+          }
+        }
+      })
     },
     stopMission: function() {
       schedule.cancelJob(this.job);

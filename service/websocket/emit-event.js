@@ -19,3 +19,7 @@ exports.emitInterfaceFlow = (client, payload) => {
   console.log(`emitInterfaceFlow === payload : ${JSON.stringify(payload)}`)
   return client.emit(`wss:event:socket:node:interface:flow`, payload);
 }
+exports.emitManetInterfaceDelay = (client, payload) => {
+  console.log(`emitManetInterfaceDelay === payload : ${JSON.stringify(payload)}`)
+  return client.emit(`wss:event:socket:node:manet:interface:delay`, payload);
+}
