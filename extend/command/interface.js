@@ -171,6 +171,8 @@ exports.interfaceDeleteLanDhcp = () => {
 exports.interfaceAddLanDns = (address, port, cache_size, upstream, analysis) => {
   return new Promise(async (resolve, rejected) => {
     let server_content = '', address_content = '';
+    upstream = JSON.parse(upstream);
+    analysis = JSON.parse(analysis);
     upstream.map(item => server_content += `server=${item}\n`)
     analysis.map(item => address_content += `address=/${item.domain}/${item.ip}\n`);
     const content = `cache-size=${cache_size}\n${server_content}${address_content}`
