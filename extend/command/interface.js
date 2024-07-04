@@ -151,7 +151,7 @@ exports.interfaceUpdateLanAddress = (params) => {
 exports.interfaceAddLanDhcp = (start, end, gateway, dns, tenancy) => {
   return new Promise(async (resolve, rejected) => {
     await Helper.deleteFiles('/etc/dnsmasq.d', 'dhcp.conf');
-    const content = `interface=LAN\ndhcp-range=${start},${end},255.255.255.0,${tenancy}h\ndhcp-option=3,${gateway}dhcp-option=6,${dns}`
+    const content = `interface=LAN\ndhcp-range=${start},${end},255.255.255.0,${tenancy}h\ndhcp-option=3,${gateway}\ndhcp-option=6,${dns}`
     await Helper.writeFiles('/etc/dnsmasq.d', 'dhcp.conf', content);
     process.exec(`systemctl restart dnsmasq`, (err, stdout, stderr) => resolve());
   })
