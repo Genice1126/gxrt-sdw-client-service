@@ -167,13 +167,14 @@ class HttpService extends BaseServer {
     for(let i = 0 ; i < vmnic_count.length; i++) {
       const vmnic_type = await interfaceCommand.interfaceType(`GE${i}`);
       if(vmnic_type == "WAN") {
-        const [access_type, pppoe_account, ip, dns, gateway] = await Promise.all([
+        let [access_type, pppoe_account, ip, dns, gateway] = await Promise.all([
           interfaceCommand.interfaceMethod(`GE${i}`),
           basicCommand.pppoeAccount(`GE${i}`),
           basicCommand.networkAddress(`GE${i}`),
           basicCommand.networkDns(`GE${i}`),
           basicCommand.networkGateway(`GE${i}`)
         ]);
+        dns = dns.split(" | ").join(",");
         let deploy_access_type, deploy_detail;
         if(access_type.toString() == "auto") deploy_access_type = 1, deploy_detail = {};
         if(access_type.toString() == "pppoe") deploy_access_type = 2, deploy_detail = {username: pppoe_account}

@@ -176,6 +176,15 @@ exports.updateManetMaster = (client) => {
     await manetCommand.manetUpdateMaster(data.branch, data.interface_name);
   })
 }
+
+//监听自组网主节点删除
+exports.deleteManetMaster = (client) => {
+  client.on(`wss:event:node:socket:manet:master:delete`, async(data) => {
+    console.log(`===deleteManetMaster===, Data: ${JSON.stringify(data)}`);
+    await manetCommand.manetDeleteMaster(data.interface_name);
+  })
+}
+
 //监听自组网创建分支
 exports.addManetBranch = (client) => {
   client.on(`wss:event:node:socket:manet:branch:add`, async(data) => {
