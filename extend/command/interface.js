@@ -107,6 +107,7 @@ exports.interfaceUpdateWanGroup = (deploy_detail, con_name = "GE0") => {
         if(deploy_detail.dns) query_res += `ipv4.dns ${deploy_detail.dns} `;
         query_res += `ipv4.method manual`
       }
+      console.log('query_res==>', query_res);
       process.exec(query_res, (err, stdout, stderr) => {
         process.exec(`nmcli connection up ${con_name}`, (err, stdout, stderr) => resolve())
       })
