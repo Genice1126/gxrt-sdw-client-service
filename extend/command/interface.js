@@ -175,7 +175,7 @@ exports.interfaceAddLanDns = (address, port, cache_size, upstream, analysis) => 
     analysis = JSON.parse(analysis);
     upstream.map(item => server_content += `server=${item}\n`)
     analysis.map(item => address_content += `address=/${item.domain}/${item.ip}\n`);
-    const content = `cache-size=${cache_size}\n${server_content}${address_content}`
+    const content = `port=${port}\ncache-size=${cache_size}\n${server_content}${address_content}`
     await Helper.writeFiles('/etc/dnsmasq.d/', 'dns.conf', content)
     process.exec(`systemctl restart dnsmasq`, (err, stdout, stderr) => resolve())
   })
