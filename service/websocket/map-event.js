@@ -71,6 +71,20 @@ exports.unauthorized = (client) => {
     global.socketConnection = null;
   })
 }
+//设备关机
+exports.shutdown = (client) => {
+  client.on(`wss:event:node:socket:shutdown`, async () => {
+    console.log(`===shutdown===, Data: ${JSON.stringify(data)}`);
+    await basicCommand.shutdown();
+  })
+}
+//设备重启
+exports.reboot = (client) => {
+  client.on(`wss:event:node:socket:reboot`, async () => {
+    console.log(`===reboot===, Data: ${JSON.stringify(data)}`);
+    await basicCommand.reboot();
+  })
+}
 //监听更新Wan口
 exports.updateWanInterfaceDeploy = (client) => {
   client.on(`wss:event:node:socket:interface:wan:update`, async(data) => {
@@ -176,7 +190,6 @@ exports.updateManetMaster = (client) => {
     await manetCommand.manetUpdateMaster(data.branch, data.interface_name);
   })
 }
-
 //监听自组网主节点删除
 exports.deleteManetMaster = (client) => {
   client.on(`wss:event:node:socket:manet:master:delete`, async(data) => {
@@ -184,7 +197,6 @@ exports.deleteManetMaster = (client) => {
     await manetCommand.manetDeleteMaster(data.interface_name);
   })
 }
-
 //监听自组网创建分支
 exports.addManetBranch = (client) => {
   client.on(`wss:event:node:socket:manet:branch:add`, async(data) => {

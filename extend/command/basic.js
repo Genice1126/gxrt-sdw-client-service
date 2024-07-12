@@ -11,6 +11,23 @@ exports.__customCommand = (command) => {
   })
 }
 /**
+ * 关机
+ */
+exports.shutdown = () => {
+  return new Promise((resolve, rejected) => {
+    process.exec(`shutdown -P now`, (err, stdout, stderr) => resolve())
+  })
+}
+/**
+ * 重启
+ */
+exports.reboot = () => {
+  return new Promise((resolve, rejected) => {
+    process.exec(`reboot`, (err, stdout, stderr) => resolve())
+  })
+}
+
+/**
  * 同步文件到micro
  */
 exports.syncFile = (s_addr, d_addr) => {

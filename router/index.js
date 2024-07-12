@@ -20,5 +20,8 @@ router.post('/progress', HttpService.updateInitStatusService);
 router.post('/system', HttpService.systemTargetService);
 //获取物理网卡信息
 router.post('/vmnic', HttpService.vmnicTargetService);
-
+//设备关机
+router.post('/shutdown', HttpService.shutdownService);
+//设备重启
+router.post('/reboot', HttpService.rebootService)
 module.exports = router;
