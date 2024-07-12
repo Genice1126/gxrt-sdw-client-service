@@ -1,4 +1,4 @@
-const {interfaceCommand, manetCommand, domainAccelerCommand, diagnoseCommand, basicCommand, natSwitchCommand} = require('../../extend/command');
+const {interfaceCommand, manetCommand, domainAccelerCommand, diagnoseCommand, basicCommand, natSwitchCommand, firewallCommand} = require('../../extend/command');
 const EmitEvent = require('../websocket/emit-event');
 const schedule = require('../schedule');
 const path = require('path');
@@ -333,5 +333,12 @@ exports.deleteNatSwitchDestin = (client) => {
   client.on(`wss:event:node:socket:nat:switch:destin:delete`, async(data) => {
     console.log(`===deleteNatSwitchDestin===, Data: ${JSON.stringify(data)}`)
     await natSwitchCommand.natSwitchDestinDelete(data.s_interface_name, data.s_address, data.d_protocol, data.d_address, data.d_port, data.convert_d_address, data.convert_d_port);
+  })
+}
+//添加防火墙策略
+exports.addFirewall = (client) => {
+  client.on(`wss:event:node:socket:fire:wall:create`, async(data) => {
+    console.log(`===addFirewall===, Data: ${JSON.stringify(data)}`)
+    await firewallCommand.firewallAdd(data.s_interface_name, data.d_interface_name, data.s_ip_address, data.d_ip_address, data.firewall_protocol, data.firewall_action)
   })
 }
