@@ -140,7 +140,7 @@ exports.interfaceUpdateLanGroup = (deploy_detail, con_name = "GE0") => {
  */
 exports.interfaceUpdateLanAddress = (params) => {
   return new Promise((resolve, rejected) => {
-    process.exec(`nmcli connection modify LAN ipv4.method manual ipv4.addresses ${params.deploy_detail.address}`, (err, stdout, stderr) => {
+    process.exec(`nmcli connection modify LAN ipv4.method manual ipv4.addresses ${params.address}`, (err, stdout, stderr) => {
       process.exec(`nmcli connection up LAN`, (err, stdout, stderr) => resolve())
     })
   })

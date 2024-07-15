@@ -73,14 +73,14 @@ exports.unauthorized = (client) => {
 }
 //设备关机
 exports.shutdown = (client) => {
-  client.on(`wss:event:node:socket:shutdown`, async () => {
+  client.on(`wss:event:node:socket:shutdown`, async (data) => {
     console.log(`===shutdown===, Data: ${JSON.stringify(data)}`);
     await basicCommand.shutdown();
   })
 }
 //设备重启
 exports.reboot = (client) => {
-  client.on(`wss:event:node:socket:reboot`, async () => {
+  client.on(`wss:event:node:socket:reboot`, async (data) => {
     console.log(`===reboot===, Data: ${JSON.stringify(data)}`);
     await basicCommand.reboot();
   })
