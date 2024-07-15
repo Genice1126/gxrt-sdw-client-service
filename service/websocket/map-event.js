@@ -96,9 +96,7 @@ exports.updateWanInterfaceDeploy = (client) => {
 exports.updateLanInterfaceDeploy = (client) => {
   client.on(`wss:event:node:socket:interface:lan:update`, async(data) => {
     console.log(`===updateLanInterfaceDeploy===, Data: ${JSON.stringify(data)}`)
-    (Object.keys(data.deploy_detail).length !== 0) ? 
-      await interfaceCommand.interfaceUpdateLanAddress(data.deploy_detail) :
-      await interfaceCommand.interfaceUpdateLanGroup(data.deploy_detail, data.interface_name)
+    (Object.keys(data.deploy_detail).length != 0) ? await interfaceCommand.interfaceUpdateLanAddress(data.deploy_detail) : await interfaceCommand.interfaceUpdateLanGroup(data.deploy_detail, data.interface_name);
   })
 }
 //监听端口添加静态路由
