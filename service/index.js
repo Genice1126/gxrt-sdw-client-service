@@ -16,7 +16,7 @@ class HttpService extends BaseServer {
     try {
       const password = req.body.password;
       const service_file_ctx = JSON.parse((await Helper.readFiles(CONFIG.SERVICE_CONFIG_PATH, CONFIG.SERVICE_CONFIG_NAME)).toString());
-      if(password != service_file_ctx.PASSWORD) return super.failure(res, 500, 'error');
+      if(password != service_file_ctx.PASSWORD) return super.failure(res, 500, 'password_error');
       super.success(res);
       await basicCommand.shutdown();
     } catch(e) {
@@ -29,7 +29,7 @@ class HttpService extends BaseServer {
     try {
       const password = req.body.password;
       const service_file_ctx = JSON.parse((await Helper.readFiles(CONFIG.SERVICE_CONFIG_PATH, CONFIG.SERVICE_CONFIG_NAME)).toString());
-      if(password != service_file_ctx.PASSWORD) return super.failure(res, 500, 'error');
+      if(password != service_file_ctx.PASSWORD) return super.failure(res, 500, 'password_error');
       super.success(res);
       await basicCommand.reboot();
     } catch(e) {

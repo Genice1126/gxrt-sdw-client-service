@@ -15,7 +15,7 @@ exports.__customCommand = (command) => {
  */
 exports.shutdown = () => {
   return new Promise((resolve, rejected) => {
-    process.exec(`shutdown -P now`, (err, stdout, stderr) => resolve())
+    process.exec(`sync && shutdown -P now`, (err, stdout, stderr) => resolve())
   })
 }
 /**
@@ -23,7 +23,7 @@ exports.shutdown = () => {
  */
 exports.reboot = () => {
   return new Promise((resolve, rejected) => {
-    process.exec(`reboot`, (err, stdout, stderr) => resolve())
+    process.exec(`sync && reboot`, (err, stdout, stderr) => resolve())
   })
 }
 
