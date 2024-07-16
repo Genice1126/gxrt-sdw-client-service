@@ -349,6 +349,7 @@ exports.deleteNatSwitchDestin = (client) => {
 exports.addFirewall = (client) => {
   client.on(`wss:event:node:socket:fire:wall:create`, async(data) => {
     console.log(`===addFirewall===, Data: ${JSON.stringify(data)}`);
-    await firewallCommand.firewallAdd(data.s_interface_name, data.d_interface_name, data.s_ip_address, data.d_ip_address, data.firewall_protocol, data.firewall_action)
+    await firewallCommand.firewallAdd(data.data);
+    // await firewallCommand.firewallAdd(data.s_interface_name, data.d_interface_name, data.s_ip_address, data.d_ip_address, data.firewall_protocol, data.firewall_action)
   })
 }

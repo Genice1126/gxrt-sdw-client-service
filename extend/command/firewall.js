@@ -1,14 +1,16 @@
 const process = require('child_process');
 const Helper = require('../helper');
 
-exports.firewallAdd = (s_interface_name, d_interface_name, s_ip_address, d_ip_address, firewall_protocol, firewall_action) => {
+exports.firewallAdd = (data) => {
   return new Promise(async (resolve, rejected) => {
     let content = `*filter\n`
-    for(let i = 0 ; i < s_ip_address.length; i++) {
-      for(let k = 0; k < d_ip_address.length; k++) {
-        content += `-A FORWARD -i ${s_interface_name} -o ${d_interface_name} -s ${s_ip_address[i]} -d ${d_ip_address[k]}`;
-        if(firewall_protocol != 'all') content += ` -p ${firewall_protocol}`;
-        content += ` -j ${firewall_action}\n`
+    for(let m = 0; m < data.length; m++) {
+      for(let i = 0 ; i < data[m].s_ip_address.length; i++) {
+        for(let k = 0; k < data[m].d_ip_address.length; k++) {
+          content += `-A FORWARD -i ${data[m].s_interface_name} -o ${data[m].d_interface_name} -s ${data[m].s_ip_address[i]} -d ${data[m].d_ip_address[k]}`;
+          if(data[m].firewall_protocol != 'all') content += ` -p ${data[m].firewall_protocol}`;
+          content += ` -j ${data[m].firewall_action}\n`
+        }
       }
     }
     content += `COMMIT`;
