@@ -8,13 +8,13 @@ exports.firewallAdd = (s_interface_name, d_interface_name, s_ip_address, d_ip_ad
       for(let k = 0; k < d_ip_address.length; k++) {
         content += `-A FORWARD -i ${s_interface_name} -o ${d_interface_name} -s ${s_ip_address[i]} -d ${d_ip_address[k]}`;
         if(firewall_protocol != 'all') content += ` -p ${firewall_protocol}`;
-        content += ` --${firewall_action}\n`
+        content += ` -j ${firewall_action}\n`
       }
     }
     content += `COMMIT`;
     console.log('content===>>', content);
     await Helper.writeFiles('/etc', "firewall.rule", content);
-    process.exec(`iptables-restore -t filter < /etc/firewall.rule`, (err, stdout, stderr) => {
+    process.exec(`iptables-restore -T filter < /etc/firewall.rule`, (err, stdout, stderr) => {
       process.exec(`netfilter-persistent save`, (err, stdout, stderr) => resolve());
     })
   })
