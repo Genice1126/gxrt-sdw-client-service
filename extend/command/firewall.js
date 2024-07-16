@@ -12,6 +12,7 @@ exports.firewallAdd = (s_interface_name, d_interface_name, s_ip_address, d_ip_ad
       }
     }
     content += `COMMIT`;
+    console.log('content===>>', content);
     await Helper.writeFiles('/etc', "firewall.rule", content);
     process.exec(`iptables-restore -t filter < /etc/firewall.rule`, (err, stdout, stderr) => {
       process.exec(`netfilter-persistent save`, (err, stdout, stderr) => resolve());
