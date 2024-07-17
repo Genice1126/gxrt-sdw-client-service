@@ -74,7 +74,15 @@ exports.interfaceMethod = (con_name = "GE0") => {
   return new Promise((resolve, rejected) => {
     process.exec(`nmcli -f ipv4.method --mode tabular --terse con show ${con_name}`, (err, stdout, stderr) => {
       (stdout) ? stdout = Helper.stringTrimLine(stdout) : stdout;
-      resolve(stdout);
+      if(stdout.toString() == "auto") {
+        process.exec(`nmcli -f connection.type --mode tabular --terse con show ${con_name}`, (err, stdout, stderr) => {
+          (stdout) ? stdout = Helper.stringTrimLine(stdout) : stdout;
+          resolve(stdout);
+        })
+      }else {
+        resolve(stdout);
+      }
+      
     })
   })
 }

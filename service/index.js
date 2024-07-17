@@ -204,9 +204,22 @@ class HttpService extends BaseServer {
         ]);
         dns = dns.split(" | ").join(",");
         let deploy_access_type, deploy_detail;
-        if(access_type.toString() == "auto") deploy_access_type = 1, deploy_detail = {};
-        if(access_type.toString() == "pppoe") deploy_access_type = 2, deploy_detail = {username: pppoe_account}
-        if(access_type.toString() == "manual") deploy_access_type = 3, deploy_detail = {address: ip, gateway: gateway, dns: dns}
+        switch(access_type) {
+          case '802-3-ethernet':
+            deploy_access_type = 1;
+            deploy_detail = {address: ip, gateway: gateway, dns: dns};
+            break;
+          case 'pppoe':
+            deploy_access_type = 2;
+            deploy_detail = {username: pppoe_account, address: ip, gateway: gateway, dns: dns};
+            break;
+          default:
+            deploy_access_type = 3;
+            deploy_detail = {address: ip, gateway: gateway, dns: dns};
+        }
+        // if(access_type.toString() == "auto") deploy_access_type = 1, deploy_detail = {address: ip, gateway: gateway, dns: dns};
+        // if(access_type.toString() == "pppoe") deploy_access_type = 2, deploy_detail = {username: pppoe_account}
+        // if(access_type.toString() == "manual") deploy_access_type = 3, deploy_detail = {address: ip, gateway: gateway, dns: dns}
         data_array.push({interface_name: `GE${i}`, interface_type: 1, exec_body: {deploy_access_type: deploy_access_type, deploy_detail: deploy_detail}})
       }
     }
