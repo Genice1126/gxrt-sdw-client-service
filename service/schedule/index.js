@@ -1,8 +1,10 @@
 const schedule = require('node-schedule');
 const EmitEvent = require('../websocket/emit-event');
-const {basicCommand, interfaceCommand, diagnoseCommand, manetCommand} = require('../../extend/command');
+const {basicCommand, interfaceCommand, diagnoseCommand, manetCommand, domainAccelerCommand} = require('../../extend/command');
 const Helper = require('../../extend/helper');
 const CONFIG = require('../../config/index');
+const axios = require('axios');
+
 module.exports = {
   osTargetScheduleTask: {
     job: null,
@@ -214,6 +216,58 @@ module.exports = {
             EmitEvent.emitManetInterfaceDelay(client, send_body);
           }
         }
+      })
+    },
+    stopMission: function() {
+      schedule.cancelJob(this.job);
+    }
+  },
+  domainAccelerScheduleTask: {
+    jobs: {},
+    startMission: function(client) {
+      this.job = schedule.scheduleJob('*/30 * * * * *', async() => {
+        /**
+         * 先检测
+         * 先检测文件是否存在 
+         */
+        const file_is_exists = await Helper.existsFiles('/etc/dnsmasq.d/', 'outside.conf');
+        if(!file_is_exists) return;
+        const res = await diagnoseCommand.diagnoseAddPing('172.16.1.165', 1);
+        const reg_res = res.match(/,(.*)(\S*)received/);
+        let commandRes = 0;
+        if(reg_res) commandRes = (parseInt(stdout.match(/,(.*)(\S*)received/)[1]) == 0) ? 0 : 1;
+        if(commandRes == 1) return;
+        /**
+         * 测试
+         * 根据存储的pop文件 http 拿到所有pop点的ip地址
+         * 每一个ip地址测速 并记录时间
+         * 取出时间最小的
+         * pop: pop_id_array, dns_analy_before: '8.8.8.8', dns_analy_after: domain_acceler_dns_analy, domain_list: white_list[0].domain
+         */
+        const ctx = await Helper.readFiles(CONFIG.SCHEDULE_DOMAIN_ACCELER_PATH, "vpn.js");
+        let ctx_json = JSON.parse(ctx);
+        const response = await axios.post('https://www.baidu.com', {
+            pop_id_array: ctx_json.pop,
+        });
+        let addr_array = [];
+        for(let i = 0 ; i < response.length; i++) {
+          let addr = JSON.parse(response[i].pop_ip_address);
+          for(let m = 0; m < addr.length; m++) {
+            addr_array.push(addr[m].ip);
+          }
+        }
+        let max_obj = {ip: "", avg: 10000};
+        for(let n = 0; n < addr_array.length; n++) {
+          const res = await diagnoseCommand.diagnoseAddPing(addr_array[n], 1, "", 10, 0.1);
+          const rtt_regex = /rtt min\/avg\/max\/mdev = (\d+\.\d+)\/(\d+\.\d+)\/(\d+\.\d+)\/(\d+\.\d+) ms/;
+          const rtt_match = res.match(rtt_regex);
+          const rtt_avg = rtt_match ? rtt_match[2] : 20000;
+          if(rtt_avg < max_obj.avg) max_obj.ip = addr_array[n];
+        }
+        /**
+         * 执行指令
+         */
+        await domainAccelerCommand.vpnConnection(max_obj.ip);
       })
     },
     stopMission: function() {

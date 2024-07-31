@@ -15,6 +15,7 @@ module.exports = {
   DIAGNOSE_CAPTURE_PACKAGE_PATH: "/root/gxrt-sdw/gxrt-sdw-client-service",  //抓包文件本机存放地址
 
   SCHEDULE_DIAGNOSE_LINK_PATH: "/root/gxrt-sdw/gxrt-sdw-client-service/service/schedule/diagnose-link",
+  SCHEDULE_DOMAIN_ACCELER_PATH: "/root/gxrt-sdw/gxrt-sdw-client-service/service/schedule/domain-acceler",
 
   SERVICE_CONFIG_PATH: "/root/gxrt-sdw/gxrt-sdw-client-service",
   SERVICE_CONFIG_NAME: "service.conf",

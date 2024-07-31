@@ -39,6 +39,7 @@ exports.disconnect = (client) => {
     schedule.diagnoseLinkScheduleTask.stopAllMission();
     schedule.interfaceFlowScheduleTask.stopMission();
     schedule.manetInterfaceDelayScheduleTask.stopMission();
+    schedule.domainAccelerScheduleTask.stopMission();
   })
 }
 //监听连接错误事件
@@ -61,6 +62,7 @@ exports.authenticated = (client) => {
     schedule.diagnoseLinkScheduleTask.startAllMission(client);
     schedule.interfaceFlowScheduleTask.startMission(client);
     schedule.manetInterfaceDelayScheduleTask.startMission(client);
+    schedule.domainAccelerScheduleTask.startMission(client);
   })
 }
 //监听设备认证未通过
@@ -215,41 +217,66 @@ exports.deleteManetBranch = (client) => {
     await manetCommand.manetDeleteBranch(data.interface_name);
   })
 }
-//添加域名加速服务
+
+//====================================================================================================================
 exports.addDomainAcceler = (client) => {
   client.on(`wss:event:node:socket:domain:acceler:add`, async(data) => {
     console.log(`===addDomainAcceler===, Data: ${JSON.stringify(data)}`)
-    await domainAccelerCommand.domainAccelerAdd(data.domain_list, data.interface_name);
+    await domainAccelerCommand.domainAccelerAdd(data);
   })
 }
-//更新域名加速服务
-exports.updateDomainAcceler = (client) => {
-  client.on(`wss:event:node:socket:domain:acceler:update`, async(data) => {
-    console.log(`===updateDomainAcceler===, Data: ${JSON.stringify(data)}`)
-    await domainAccelerCommand.domainAccelerUpdate(data.domain_list, data.interface_name);
-  })
-}
-//删除域名加速服务
+
 exports.deleteDomainAcceler = (client) => {
   client.on(`wss:event:node:socket:domain:acceler:delete`, async(data) => {
     console.log(`===deleteDomainAcceler===, Data: ${JSON.stringify(data)}`)
     await domainAccelerCommand.domainAccelerDelete();
   })
 }
-//添加域名加速指定DNS解析
-exports.addDomainAccelerDns = (client) => {
-  client.on(`wss:event:node:socket:domain:acceler:dns:add`, async(data) => {
-    console.log(`===addDomainAccelerDns===, Data: ${JSON.stringify(data)}`)
-    await domainAccelerCommand.domainAccelerDnsAdd(data.dns_analy_before, data.dns_analy_after, data.domain_list, data.interface_name);
-  })
-}
-//删除域名加速指定DNS解析
-exports.deleteDomainAccelerDns = (client) => {
-  client.on(`wss:event:node:socket:domain:acceler:dns:delete`, async (data) => {
-    console.log(`===deleteDomainAccelerDns===, Data: ${JSON.stringify(data)}`)
-    await domainAccelerCommand.domainAccelerDnsDelete(data.dns_analy, data.interface_name)
-  })
-}
+//pop点测速  =-=-=-=-=-=-=-=-
+// exports.popSpeed = (client) => {
+//   client.on(`wss:event:node:socket:domain:pop:speed`, async(data) => {
+    
+//   })
+// }
+
+// //添加域名加速服务
+// exports.addDomainAcceler = (client) => {
+//   client.on(`wss:event:node:socket:domain:acceler:add`, async(data) => {
+//     console.log(`===addDomainAcceler===, Data: ${JSON.stringify(data)}`)
+//     await domainAccelerCommand.domainAccelerAdd(data.domain_list, data.interface_name);
+//   })
+// }
+// //更新域名加速服务
+// exports.updateDomainAcceler = (client) => {
+//   client.on(`wss:event:node:socket:domain:acceler:update`, async(data) => {
+//     console.log(`===updateDomainAcceler===, Data: ${JSON.stringify(data)}`)
+//     await domainAccelerCommand.domainAccelerUpdate(data.domain_list, data.interface_name);
+//   })
+// }
+// //删除域名加速服务
+// exports.deleteDomainAcceler = (client) => {
+//   client.on(`wss:event:node:socket:domain:acceler:delete`, async(data) => {
+//     console.log(`===deleteDomainAcceler===, Data: ${JSON.stringify(data)}`)
+//     await domainAccelerCommand.domainAccelerDelete();
+//   })
+// }
+// //添加域名加速指定DNS解析
+// exports.addDomainAccelerDns = (client) => {
+//   client.on(`wss:event:node:socket:domain:acceler:dns:add`, async(data) => {
+//     console.log(`===addDomainAccelerDns===, Data: ${JSON.stringify(data)}`)
+//     await domainAccelerCommand.domainAccelerDnsAdd(data.dns_analy_before, data.dns_analy_after, data.domain_list, data.interface_name);
+//   })
+// }
+// //删除域名加速指定DNS解析
+// exports.deleteDomainAccelerDns = (client) => {
+//   client.on(`wss:event:node:socket:domain:acceler:dns:delete`, async (data) => {
+//     console.log(`===deleteDomainAccelerDns===, Data: ${JSON.stringify(data)}`)
+//     await domainAccelerCommand.domainAccelerDnsDelete(data.dns_analy, data.interface_name)
+//   })
+// }
+//====================================================================================================================
+
+
 //添加ping诊断工具
 exports.addDiagnosePing = (client) => {
   client.on(`wss:event:node:socket:diagnose:ping:create`, async(data) => {
