@@ -8,10 +8,10 @@ module.exports = {
     CONNECTED: 0,  //0第一次登录 1修改密码完成 2上网配置完成 3socket配置完成
     ACCOUNT: "admin",
     PASSWORD: "admin",
-    SOCKET: "ws://192.168.39.22:5002"
+    SOCKET: "ws://192.168.3.64:5002"
   },
 
-  SSH_MICRO_SYNC: "guoxin@192.168.39.22",
+  SSH_MICRO_SYNC: "guoxin@192.168.3.64",
   DOWNLOAD_CAPTURE_PACKAGE_PATH: "/home/guoxin/",
   DIAGNOSE_CAPTURE_PACKAGE_PATH: "/root/gxrt-sdw/gxrt-sdw-client-service",  //抓包文件本机存放地址
 
