@@ -17,6 +17,13 @@ exports.connection = (client) => {
     console.log(`ready to authenticate device....`);
   })
 }
+//监听pong
+exports.pingpong = (client) => {
+  client.on('pong', (latency) => {
+    console.log(`收到服务器 pong,延迟: ${latency}ms`);
+  })
+}
+
 //监听心跳时间事件
 exports.heartBeat = (client) => {
   client.on('wss:event:node:socket:heart:beat', (data) => {
@@ -26,6 +33,9 @@ exports.heartBeat = (client) => {
     console.log('heartBeat latency : ', latency);
   })
 }
+
+
+
 //监听断开连接事件
 exports.disconnect = (client) => {
   client.on('disconnect', (reason) => {
