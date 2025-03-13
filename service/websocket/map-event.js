@@ -18,10 +18,15 @@ exports.connection = (client) => {
   })
 }
 //监听pong
-exports.pingpong = (client) => {
-  client.on('pong', (latency) => {
-    console.log(`收到服务器 pong,延迟: ${latency}ms`);
-  })
+exports.listenPing = (client) => {
+  client.io.engine.on("packet", (packet) => {
+    if (packet.type === "ping") {
+      console.log("收到服务器的 ping");
+    }
+    if (packet.type === "pong") {
+      console.log("客户端发送了 pong");
+    }
+  });
 }
 
 //监听心跳时间事件

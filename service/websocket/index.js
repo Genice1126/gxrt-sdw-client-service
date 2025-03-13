@@ -7,6 +7,7 @@ module.exports = (socketAddress, condition) => {
     global.socketConnection.disconnect();
   }
   condition = Object.assign(condition, {
+    transports: ['websocket'],
     reconnection: true, 
     reconnectionDelay: 5000,
   })
