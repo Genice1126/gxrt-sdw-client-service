@@ -11,7 +11,8 @@ exports.natSwitchSourceAdd = (s_con_name, s_address, d_con_name, d_address, conv
     if(s_address) query_res += ` -s ${s_address}`;
     if(d_con_name) query_res += ` -o ${d_con_name}`;
     if(d_address) query_res += ` -d ${d_address}`;
-    (convert_s_address) ? query_res += ` -j SNAT --to ${convert_s_address}` : ` -j MASQUERADE`;
+    query_res += (convert_s_address) ? ` -j SNAT --to ${convert_s_address}` : ` -j MASQUERADE`;
+    // (convert_s_address) ? query_res += ` -j SNAT --to ${convert_s_address}` : ` -j MASQUERADE`;
     console.log('query_res ===>', query_res);
     process.exec(query_res, (err, stdout, stderr) => {
       process.exec(`netfilter-persistent save`, (err, stdout, stderr) => resolve())
@@ -28,7 +29,8 @@ exports.natSwitchSourceDelete = (s_con_name, s_address, d_con_name, d_address, c
     if(s_address) query_res += ` -s ${s_address}`;
     if(d_con_name) query_res += ` -o ${d_con_name}`;
     if(d_address) query_res += ` -d ${d_address}`;
-    (convert_s_address) ? query_res += ` -j SNAT --to ${convert_s_address}` : ` -j MASQUERADE`;
+    query_res += (convert_s_address) ? ` -j SNAT --to ${convert_s_address}` : ` -j MASQUERADE`;
+    // (convert_s_address) ? query_res += ` -j SNAT --to ${convert_s_address}` : ` -j MASQUERADE`;
     console.log('query_res ===>', query_res);
     process.exec(query_res, (err, stdout, stderr) => {
       process.exec(`netfilter-persistent save`, (err, stdout, stderr) => resolve())
