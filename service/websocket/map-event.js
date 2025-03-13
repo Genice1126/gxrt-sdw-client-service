@@ -19,15 +19,19 @@ exports.connection = (client) => {
 }
 //监听pong
 exports.listenPing = (client) => {
-  client.io.engine.on("packet", (packet) => {
-    if (packet.type === "ping") {
-      console.log("收到服务器的 ping");
-      // client.io.engine.write("pong");
-    }
-    if (packet.type === "pong") {
-      console.log("客户端发送了 pong");
-    }
-  });
+  client.on('ping', () => {
+    console.log("收到服务器的 ping");
+  })
+
+  // client.io.engine.on("packet", (packet) => {
+  //   if (packet.type === "ping") {
+  //     console.log("收到服务器的 ping");
+  //     client.io.engine.write("pong");
+  //   }
+  //   if (packet.type === "pong") {
+  //     console.log("客户端发送了 pong");
+  //   }
+  // });
 }
 
 //监听心跳时间事件
