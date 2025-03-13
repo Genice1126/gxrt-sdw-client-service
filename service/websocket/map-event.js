@@ -28,9 +28,9 @@ exports.heartBeat = (client) => {
 }
 //监听断开连接事件
 exports.disconnect = (client) => {
-  client.on('disconnect', () => {
+  client.on('disconnect', (reason) => {
     setTimeout(() => {client.connect()}, 5000);
-    console.log(`connection is disconnect, ready to reconnection...`);
+    console.log(`connection is disconnect, reason: ${reason}, ready to reconnection...`);
     global.socketConnectionStatus = 0;
     global.socketConnection = null;
     schedule.osTargetScheduleTask.stopMission();
