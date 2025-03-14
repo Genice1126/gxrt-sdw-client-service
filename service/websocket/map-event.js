@@ -18,16 +18,16 @@ exports.connection = (client) => {
   })
 }
 //监听pong
-exports.listenPing = (client) => {
-  client.io.engine.on("packet", (packet) => {
-    if (packet.type === "ping") {
-      console.log("收到服务器的 ping");
-    }
-    if (packet.type === "pong") {
-      console.log("客户端发送了 pong");
-    }
-  });
-}
+// exports.listenPing = (client) => {
+//   client.io.engine.on("packet", (packet) => {
+//     if (packet.type === "ping") {
+//       console.log("收到服务器的 ping");
+//     }
+//     if (packet.type === "pong") {
+//       console.log("客户端发送了 pong");
+//     }
+//   });
+// }
 
 //监听心跳时间事件
 exports.heartBeat = (client) => {
@@ -70,6 +70,10 @@ exports.connect_error = (client) => {
 exports.authenticated = (client) => {
   client.on(`wss:event:node:socket:authenticated`, (data) => {
     console.log(`connection is successfully...`);
+    setInterval(() => {
+      console.log("📡 手动发送 `pong`");
+      client.emit("custom_pong");
+    }, 10000);
     global.socketConnectionStatus = 1;
     schedule.heartBeatScheduleTask.startMission(client);
     schedule.osTargetScheduleTask.startMission(client);
