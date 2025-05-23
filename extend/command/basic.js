@@ -159,3 +159,37 @@ exports.pppoeAccount = (con_name = "GE0") => {
     })
   })
 }
+/**
+ * 后台系统升级
+ */
+exports.systemServiceUpgrade = (tag) => {
+  return new Promise((resolve, rejected) => {
+    let query = 'git pull';
+    if(tag) query += ` origin ${tag}`
+    process.exec(`cd /root/gxrt-sdw/gxrt-sdw-client-service`, (err, stdout, stderr) => {
+      process.exec(`${query}`, (err, stdout, stderr) => {
+        process.exec(`pm2 restart all`, (err, stdout, stderr) => {
+          resolve();
+        })
+      })
+    })
+  })
+}
+/**
+ * 前台系统升级
+ */
+exports.systemFrontUpgrade = (tag) => {
+  return new Promise((resolve, rejected) => {
+    let query = 'git pull';
+    if(tag) query += ` origin ${tag}`
+    process.exec(`cd /var/www/html`, (err, stdout, stderr) => {
+      process.exec(`${query}`, (err, stdout, stderr) => {
+        process.exec(`npm run build`, (err, stdout, stderr) => {
+          process.exec(`nginx -s reload`, (err, stdout, stderr) => {
+            resolve();
+          })
+        })
+      })
+    })
+  })
+}

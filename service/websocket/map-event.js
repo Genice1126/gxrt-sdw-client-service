@@ -1,4 +1,4 @@
-const {interfaceCommand, manetCommand, domainAccelerCommand, diagnoseCommand, basicCommand, natSwitchCommand, firewallCommand} = require('../../extend/command');
+const {interfaceCommand, manetCommand, domainAccelerCommand, diagnoseCommand, basicCommand, natSwitchCommand, firewallCommand, routerStrategyCommand} = require('../../extend/command');
 const EmitEvent = require('../websocket/emit-event');
 const schedule = require('../schedule');
 const path = require('path');
@@ -397,5 +397,45 @@ exports.addFirewall = (client) => {
     console.log(`===addFirewall===, Data: ${JSON.stringify(data)}`);
     await firewallCommand.firewallAdd(data.data);
     // await firewallCommand.firewallAdd(data.s_interface_name, data.d_interface_name, data.s_ip_address, data.d_ip_address, data.firewall_protocol, data.firewall_action)
+  })
+}
+
+//添加路由策略IP
+exports.addRouterStrategyIp = (client) => {
+  client.on(`wss:event:node:socket:router:strategy:ip:create`, async(data) => {
+    console.log(`===addRouterStrategyIp===, Data: ${JSON.stringify(data)}`);
+    await routerStrategyCommand.routerStrategyIpAdd(data.name_en, data.fileData);
+  })
+}
+
+//删除路由策略IP
+exports.deleteRouterStrategyIp = (client) => {
+  client.on(`wss:event:node:socket:router:strategy:ip:delete`, async(data) => {
+    console.log(`===deleteRouterStrategyIp===, Data: ${JSON.stringify(data)}`);
+    await routerStrategyCommand.routerStrategyIpDelete(data.name_en);
+  })
+}
+
+//添加路由策略
+exports.addRouterStrategy = (client) => {
+  client.on(`wss:event:node:socket:router:strategy:create`, async(data) => {
+    console.log(`===addRouterStrategy===, Data: ${JSON.stringify(data)}`);
+    await routerStrategyCommand.routerStrategyAdd(data);
+  })
+}
+
+//后台系统升级
+exports.systemServiceUpgrade = (client) => {
+  client.on(`wss:event:node:socket:service:upgrade`, async(data) => {
+    console.log(`===systemServiceUpgrade===, Data: ${JSON.stringify(data)}`);
+    await basicCommand.systemServiceUpgrade(data.tag);
+  })
+}
+
+//前台台系统升级
+exports.systemFrontUpgrade = (client) => {
+  client.on(`wss:event:node:socket:front:upgrade`, async(data) => {
+    console.log(`===systemFrontUpgrade===, Data: ${JSON.stringify(data)}`);
+    await basicCommand.systemFrontUpgrade(data.tag);
   })
 }

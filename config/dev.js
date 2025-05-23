@@ -18,9 +18,12 @@ module.exports = {
   SCHEDULE_DIAGNOSE_LINK_PATH: "/root/gxrt-sdw/gxrt-sdw-client-service/service/schedule/diagnose-link", 
   SCHEDULE_DOMAIN_ACCELER_PATH: "/root/gxrt-sdw/gxrt-sdw-client-service/service/schedule/domain-acceler",
 
-  SERVICE_CONFIG_PATH: "/root/gxrt-sdw/gxrt-sdw-client-service",
+  // SERVICE_CONFIG_PATH: "/root/gxrt-sdw/gxrt-sdw-client-service",
+  SERVICE_CONFIG_PATH: "/Users/liutao/Gxrt/gxrt-sdw-project/gxrt-sdw-client-service",
   SERVICE_CONFIG_NAME: "service.conf",
   SERVICE_CONFIG_BAK_NAME: "service.conf.bak",
+
+  ROUTER_STRATEGY_IP_PATH: "/root/gxrt-sdw/router-strategy",
 
   SYSTEM_XXX_CONFIG_PATH:"",
   SYSTEM_XXX_CONFIG_NAME:"",
