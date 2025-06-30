@@ -1,5 +1,6 @@
 const process = require('child_process');
 const Helper = require('../helper');
+const CONFIG = require('../../config');
 
 exports.routerStrategyIpAdd = (name, file_data) => {
   return new Promise(async (resolve, rejected) => {
