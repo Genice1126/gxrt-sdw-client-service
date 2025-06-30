@@ -5,7 +5,7 @@ const path = require('path');
 
 exports.routerStrategyIpAdd = (name, file_data) => {
   return new Promise(async (resolve, rejected) => {
-    await Helper.writeFiles(CONFIG.ROUTER_STRATEGY_IP_PATH, `${name}.txt`, JSON.stringify(file_data));
+    await Helper.writeFiles(CONFIG.ROUTER_STRATEGY_IP_PATH, `${name}.txt`, file_data);
     console.log(`1===>>>ipset create ${name} hash:net hashsize 8192 maxelem 100000`)
     console.log(`2===>>>sed 's/^/add myipset /' ${path.join(CONFIG.ROUTER_STRATEGY_IP_PATH, `${name}.txt`)} >> ipset.restore`)
     console.log(`3===>>>iipset restore -f ipset.restore`)
