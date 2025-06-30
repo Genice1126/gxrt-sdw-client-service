@@ -7,7 +7,7 @@ exports.routerStrategyIpAdd = (name, file_data) => {
   return new Promise(async (resolve, rejected) => {
     await Helper.writeFiles(CONFIG.ROUTER_STRATEGY_IP_PATH, `${name}.txt`, file_data);
     console.log(`1===>>>ipset create ${name} hash:net hashsize 8192 maxelem 100000`)
-    console.log(`2===>>>sed 's/^/add myipset /' ${path.join(CONFIG.ROUTER_STRATEGY_IP_PATH, `${name}.txt`)} >> ipset.restore`)
+    console.log(`2===>>>sed 's/^/add ${name} /' ${path.join(CONFIG.ROUTER_STRATEGY_IP_PATH, `${name}.txt`)} >> ipset.restore`)
     console.log(`3===>>>iipset restore -f ipset.restore`)
     process.exec(`ipset create ${name} hash:net hashsize 8192 maxelem 100000`, (err, stdout, stderr) => {
       process.exec(`sed 's/^/add myipset /' ${path.join(CONFIG.ROUTER_STRATEGY_IP_PATH, `${name}.txt`)} >> ipset.restore`, (err, stdout, stderr) => {
