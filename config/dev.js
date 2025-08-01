@@ -25,6 +25,9 @@ module.exports = {
 
   ROUTER_STRATEGY_IP_PATH: "/root/gxrt-sdw/router-strategy",
 
+  IPSEC_PATH_TMP: "/root/gxrt-sdw/ipsec_tmp",
+  IPSEC_PATH: "/etc/ipsec.conf",
+
   SYSTEM_XXX_CONFIG_PATH:"",
   SYSTEM_XXX_CONFIG_NAME:"",
   SYSTEM_XXX_CONFIG_BAK_NAME:"",

@@ -1,4 +1,4 @@
-const {interfaceCommand, manetCommand, domainAccelerCommand, diagnoseCommand, basicCommand, natSwitchCommand, firewallCommand, routerStrategyCommand} = require('../../extend/command');
+const {interfaceCommand, manetCommand, domainAccelerCommand, diagnoseCommand, basicCommand, natSwitchCommand, firewallCommand, routerStrategyCommand, ipsecCommand} = require('../../extend/command');
 const EmitEvent = require('../websocket/emit-event');
 const schedule = require('../schedule');
 const path = require('path');
@@ -437,5 +437,21 @@ exports.systemFrontUpgrade = (client) => {
   client.on(`wss:event:node:socket:front:upgrade`, async(data) => {
     console.log(`===systemFrontUpgrade===, Data: ${JSON.stringify(data)}`);
     await basicCommand.systemFrontUpgrade(data.tag);
+  })
+}
+
+//创建ipsec
+exports.addIpsec = (client) => {
+  client.on(`wss:event:node:socket:ipsec:create`, async(data) => {
+    console.log(`===addIpsec===, Data: ${JSON.stringify(data)}`);
+    await ipsecCommand.addIpsec(data);
+  })
+}
+
+//删除ipsec
+exports.deleteIpsec = (client) => {
+  client.on(`wss:event:node:socket:ipsec:delete`, async(data) => {
+    console.log(`===deleteIpsec===, Data: ${JSON.stringify(data)}`);
+    await ipsecCommand.deleteIpsec(data);
   })
 }

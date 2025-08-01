@@ -6,7 +6,8 @@ const diagnoseCommand = require('./diagnose');
 const natSwitchCommand = require('./nat-switch');
 const firewallCommand = require('./firewall');
 const routerStrategyCommand = require('./router-strategy');
+const ipsecCommand = require('./ipsec');
 
 module.exports = {
-  basicCommand, interfaceCommand, manetCommand, domainAccelerCommand, diagnoseCommand, natSwitchCommand, firewallCommand, routerStrategyCommand
+  basicCommand, interfaceCommand, manetCommand, domainAccelerCommand, diagnoseCommand, natSwitchCommand, firewallCommand, routerStrategyCommand,ipsecCommand
 }
