@@ -1,4 +1,4 @@
-const {interfaceCommand, manetCommand, domainAccelerCommand, diagnoseCommand, basicCommand, natSwitchCommand, firewallCommand, routerStrategyCommand, ipsecCommand} = require('../../extend/command');
+const {interfaceCommand, manetCommand, domainAccelerCommand, diagnoseCommand, basicCommand, natSwitchCommand, firewallCommand, routerStrategyCommand, ipsecCommand, cloudProxyCommand} = require('../../extend/command');
 const EmitEvent = require('../websocket/emit-event');
 const schedule = require('../schedule');
 const path = require('path');
@@ -453,5 +453,29 @@ exports.deleteIpsec = (client) => {
   client.on(`wss:event:node:socket:ipsec:delete`, async(data) => {
     console.log(`===deleteIpsec===, Data: ${JSON.stringify(data)}`);
     await ipsecCommand.deleteIpsec(data);
+  })
+}
+
+//开启云服务代理
+exports.enableCloudProxy = (client) => {
+  client.on(`wss:event:node:socket:cloud:proxy:enable`, async(data) => {
+    console.log(`===enableCloudProxy===, Data: ${JSON.stringify(data)}`);
+    await cloudProxyCommand.enableCloudProxy(data.cloud_host, data.device_cloud_proxy_adr)
+  })
+}
+
+//关闭云服务代理
+exports.disableCloudProxy = (client) => {
+  client.on(`wss:event:node:socket:cloud:proxy:disable`, async(data) => {
+    console.log(`===disableCloudProxy===, Data: ${JSON.stringify(data)}`);
+    await cloudProxyCommand.disableCloudProxy()
+  })
+}
+
+exports.createDiagnoseProbeMission = (client) => {
+  client.on(`wss:event:node:socket:diagnose:probe:mission:create`, async(data) => {
+    console.log(`===DiagnoseProbeMission===, Data: ${JSON.stringify(data)}`);
+    const res = await diagnoseCommand.diagnoseProbeMission(data.addr, data.type);
+    EmitEvent.emitDiagnoseProbeMissionResult(client, {mission_id: data.mission_id, mission_res: res});
   })
 }

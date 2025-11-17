@@ -84,3 +84,26 @@ exports.diagnoseAddDigDomain = (source_addr, dns, domain) => {
     })
   })
 }
+
+exports.diagnoseProbeMission = async (addr, type, port) => {
+  try {
+    let res_arr = [];
+    for(let i = 0 ; i < addr.length; i++) {
+      let tmp;
+      if(type == "1") {
+        tmp = await Helper.pingExecRes(addr[i]);
+      }
+      if(type == "2") {
+        tmp = await Helper.tcpExecRes(addr[i], port);
+      }
+      if(type == "3") {
+        tmp = await Helper.urlExecRes(addr[i]);
+      }
+      res_arr.push(tmp);
+    }
+    return res_arr;
+  } catch(e) {
+    return res_arr;
+  }
+  
+}

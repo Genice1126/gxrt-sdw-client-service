@@ -83,3 +83,151 @@ exports.backupFiles = async (filePath, sourceName, destName) => {
 exports.stringTrimLine = (str) => {
   return str.replace(/^\s+|\s+$/g, "").replace(/[\r\n]+/g, " ");
 }
+
+exports.pingExecRes = async (host) => {
+  try {
+    const isWin = process.platform === 'win32';
+    const res = await ping.promise.probe(host, {
+      timeout: 3,
+      extra: [isWin ? '-n' : '-c', '10'] // 发10包
+    });
+    const parse = (val) => (isNaN(val) ? null : parseFloat(val).toFixed(2));
+    if(res.alive) {
+      return {
+        status: true,
+        detail: {
+          delay: parse(res.avg),
+          min: parse(res.min),
+          max: parse(res.max),
+          avg: parse(res.avg),
+          stddev: parse(res.stddev),
+          packetLoss: parse(res.packetLoss),
+        }
+      }
+    } else {
+      return {
+        status: false,
+        detail: {
+          delay: LimitData.MonitorOvertime,
+          min: null,
+          max: null,
+          avg: null,
+          stddev: null,
+          packetLoss: null,
+        }
+      }
+    }
+  } catch(e) {
+    return {
+      status: false,
+      detail: {
+        delay: LimitData.MonitorOvertime,
+        min: null,
+        max: null,
+        avg: null,
+        stddev: null,
+        packetLoss: null,
+      }
+    }
+  }
+}
+
+exports.tcpExecRes = async(host, port, retryCount = 0, timeout = 5000) => {
+  const totalAttempts = Number(retryCount) + 1;
+  const measureTcp = () => {
+    return new Promise((resolve) => {
+      const start = Date.now();
+      const socket = new net.Socket();
+      let resolved = false;
+
+      const fail = (reason) => {
+        if (!resolved) {
+          resolved = true;
+          socket.destroy();
+          resolve({ success: false, delay: null, failReason: reason });
+        }
+      };
+
+      socket.setTimeout(timeout);
+
+      socket.connect(port, host, () => {
+        const delay = Date.now() - start;
+        socket.destroy();
+        resolved = true;
+        resolve({ success: true, delay, failReason: null });
+      });
+
+      socket.on('error', (err) => fail(err.message));
+      socket.on('timeout', () => fail('timeout'));
+    });
+  };
+  // 并发探测
+  const probes = Array.from({ length: totalAttempts }, () => measureTcp());
+  const results = await Promise.allSettled(probes);
+
+  const samples = results.map((res) => {
+    if (res.status === 'fulfilled') return res.value;
+    return {
+      success: false,
+      delay: LimitData.MonitorOvertime,
+      failReason: res.reason?.message || 'unknown error'
+    };
+  });
+  const validDelays = samples.filter(s => s.success && s.delay !== null && s.delay >= 0).map(s => !s.delay);
+
+  const avgDelay = validDelays.length > 0
+    ? Math.round(validDelays.reduce((a, b) => a + b, 0) / validDelays.length)
+    : null;
+
+  return {
+    status: avgDelay !== null,
+    detail: {
+      code: 200,
+      delay: typeof avgDelay === 'number' ? Math.abs(avgDelay) : LimitData.MonitorOvertime,
+      retryCount,
+      timeout,
+      successCount: validDelays.length,
+      failCount: totalAttempts - validDelays.length,
+      totalAttempts,
+      samples
+    }
+  };
+}
+
+exports.urlExecRes = async(url, retryCount = 0, timeout = 5000) => {
+  const start = Date.now();
+  try {
+    const response = await got.head(url, {
+      timeout: { request: timeout },
+      followRedirect: false,
+      throwHttpErrors: false,
+      retry: retryCount,
+      agent: false,     // 禁用 keep-alive
+      dnsCache: false,  // 禁用 DNS 缓存
+      http2: false      // 避免 http2 多路复用隐藏建连阶段
+    });
+    const latency = Math.max(0, response.timings.phases?.total ?? (Date.now() - start));
+    const statusCode = response.statusCode;
+    return {
+      status: statusCode >= 200 && statusCode < 400,
+      detail: {
+        delay: (latency >= 5000) ? 5000 : latency,
+        code: statusCode,
+        message: this.getErrorReason(statusCode),
+        timings: response.timings.phases || {},
+      },
+    };
+  } catch(error) {
+    const latency = Math.abs(Date.now() - start);
+    return {
+      status: false,
+      detail: {
+        delay: 5000,
+        code: error.code,
+        message: this.getErrorReason(error.code),
+        timings: {}
+      },
+    };
+  }
+}
+
