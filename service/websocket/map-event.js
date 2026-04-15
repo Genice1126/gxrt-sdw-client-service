@@ -1,4 +1,4 @@
-const {interfaceCommand, manetCommand, domainAccelerCommand, diagnoseCommand, basicCommand, natSwitchCommand, firewallCommand, routerStrategyCommand, ipsecCommand, cloudProxyCommand} = require('../../extend/command');
+const {interfaceCommand, manetCommand, domainAccelerCommand, diagnoseCommand, basicCommand, natSwitchCommand, firewallCommand, routerStrategyCommand, ipsecCommand, cloudProxyCommand, multiHopStrategyCommand} = require('../../extend/command');
 const EmitEvent = require('../websocket/emit-event');
 const schedule = require('../schedule');
 const path = require('path');
@@ -477,5 +477,19 @@ exports.createDiagnoseProbeMission = (client) => {
     console.log(`===DiagnoseProbeMission===, Data: ${JSON.stringify(data)}`);
     const res = await diagnoseCommand.diagnoseProbeMission(data.addr, data.type);
     EmitEvent.emitDiagnoseProbeMissionResult(client, {mission_id: data.mission_id, mission_res: res});
+  })
+}
+
+exports.createMultiHopStrategy = (client) => {
+  client.on(`wss:event:node:socket:multi:hop:strategy:create`, async(data) => {
+    console.log(`====create-multi-hop-strategy======, Data: ${JSON.stringify(data)}`);
+    await multiHopStrategyCommand.multiHopStrategyAdd(data)
+  })
+}
+
+exports.deleteMultiHopStrategy = (client) => {
+  client.on(`wss:event:node:socket:multi:hop:strategy:delete`, async(data) => {
+    console.log(`====delete-multi-hop-strategy======, Data: ${JSON.stringify(data)}`);
+    await multiHopStrategyCommand.multiHopStrategyDelete(data)
   })
 }

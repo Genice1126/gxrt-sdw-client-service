@@ -3,7 +3,7 @@ const BaseServer = require("./base");
 const Helper = require('../extend/helper');
 const websocket = require('../service/websocket');
 const EmitEvent = require('./websocket/emit-event');
-const {basicCommand, interfaceCommand} = require('../extend/command/index');
+const {basicCommand, interfaceCommand, manetCommand} = require('../extend/command/index');
 
 
 class HttpService extends BaseServer {
@@ -195,27 +195,41 @@ class HttpService extends BaseServer {
     for(let i = 0 ; i < vmnic_count.length; i++) {
       const vmnic_type = await interfaceCommand.interfaceType(`GE${i}`);
       if(vmnic_type == "WAN") {
-        let [access_type, pppoe_account, ip, dns, gateway] = await Promise.all([
+        let [access_type, pppoe_account, ip, dns, gateway, quality] = await Promise.all([
           interfaceCommand.interfaceMethod(`GE${i}`),
           basicCommand.pppoeAccount(`GE${i}`),
           basicCommand.networkAddress(`GE${i}`),
           basicCommand.networkDns(`GE${i}`),
-          basicCommand.networkGateway(`GE${i}`)
+          basicCommand.networkGateway(`GE${i}`),
+          manetCommand.manetInterfaceDelay(`172.31.${255 - i}.1`)
         ]);
         dns = dns.split(" | ").join(",");
+
+        const packet_loss_regex = /(\d+)% packet loss/;
+        const packet_loss_match = quality.match(packet_loss_regex);
+        const packet_loss = packet_loss_match ? packet_loss_match[1] : null;
+        const rtt_regex = /rtt min\/avg\/max\/mdev = (\d+\.\d+)\/(\d+\.\d+)\/(\d+\.\d+)\/(\d+\.\d+) ms/;
+        const rtt_match = quality.match(rtt_regex);
+        const rtt_min = rtt_match ? rtt_match[1] : null;
+        const rtt_avg = rtt_match ? rtt_match[2] : null;
+        const rtt_max = rtt_match ? rtt_match[3] : null;
+        const rtt_mdev = rtt_match ? rtt_match[4] : null;
+        const quality_body = {interface_name, packet_loss, rtt_min, rtt_avg, rtt_max, rtt_mdev}
+
+
         let deploy_access_type, deploy_detail;
         switch(access_type) {
           case '802-3-ethernet':
             deploy_access_type = 1;
-            deploy_detail = {address: ip, gateway: gateway, dns: dns};
+            deploy_detail = {address: ip, gateway: gateway, dns: dns, quality: quality_body};
             break;
           case 'pppoe':
             deploy_access_type = 2;
-            deploy_detail = {username: pppoe_account, address: ip, gateway: gateway, dns: dns};
+            deploy_detail = {username: pppoe_account, address: ip, gateway: gateway, dns: dns, quality: quality_body};
             break;
           default:
             deploy_access_type = 3;
-            deploy_detail = {address: ip, gateway: gateway, dns: dns};
+            deploy_detail = {address: ip, gateway: gateway, dns: dns, quality: quality_body};
         }
         // if(access_type.toString() == "auto") deploy_access_type = 1, deploy_detail = {address: ip, gateway: gateway, dns: dns};
         // if(access_type.toString() == "pppoe") deploy_access_type = 2, deploy_detail = {username: pppoe_account}

@@ -8,7 +8,8 @@ const firewallCommand = require('./firewall');
 const routerStrategyCommand = require('./router-strategy');
 const ipsecCommand = require('./ipsec');
 const cloudProxyCommand = require('./cloudProxy');
+const multiHopStrategyCommand = require('./multi-hop-strategy');
 
 module.exports = {
-  basicCommand, interfaceCommand, manetCommand, domainAccelerCommand, diagnoseCommand, natSwitchCommand, firewallCommand, routerStrategyCommand,ipsecCommand, cloudProxyCommand
+  basicCommand, interfaceCommand, manetCommand, domainAccelerCommand, diagnoseCommand, natSwitchCommand, firewallCommand, routerStrategyCommand,ipsecCommand, cloudProxyCommand, multiHopStrategyCommand
 }
