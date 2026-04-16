@@ -18,6 +18,7 @@ exports.multiHopStrategyAdd = (adr, protocol, ctx) => {
 exports.multiHopStrategyDelete = () => {
   return new Promise(async (resolve, rejected) => {
     return new Promise(async (resolve, rejected) => {
+      console.log(`gost-chain stop`)
       process.exec(`gost-chain stop`, (err, stdout, stderr) => resolve());
     })
   })
