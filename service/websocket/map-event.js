@@ -483,7 +483,7 @@ exports.createDiagnoseProbeMission = (client) => {
 exports.createMultiHopStrategy = (client) => {
   client.on(`wss:event:node:socket:multi:hop:strategy:create`, async(data) => {
     console.log(`====create-multi-hop-strategy======, Data: ${JSON.stringify(data)}`);
-    await multiHopStrategyCommand.multiHopStrategyAdd(data)
+    await multiHopStrategyCommand.multiHopStrategyAdd(data.multi_hop_strategy_adr, data.multi_hop_strategy_protocol, data.multi_hop_strategy_ctx)
   })
 }
 
