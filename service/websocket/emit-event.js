@@ -15,6 +15,12 @@ exports.emitDiagnoseResult = (client, payload) => {
   console.log(`emitDiagnoseResult === payload : ${JSON.stringify(payload)}`)
   return client.emit(`wss:event:socket:node:diagnose:result`, payload);
 }
+
+exports.emitDiagnoseProbeMissionResult = (client, payload) => {
+  console.log(`emitDiagnoseProbeMissionResult === payload : ${JSON.stringify(payload)}`)
+  return client.emit(`wss:event:socket:node::diagnose:probe:mission:result`, payload);
+}
+
 exports.emitInterfaceFlow = (client, payload) => {
   console.log(`emitInterfaceFlow === payload : ${JSON.stringify(payload)}`)
   return client.emit(`wss:event:socket:node:interface:flow`, payload);

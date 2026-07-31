@@ -490,7 +490,7 @@ exports.createDiagnoseProbeMission = (client) => {
   client.on(`wss:event:node:socket:diagnose:probe:mission:create`, async(data) => {
     console.log(`===DiagnoseProbeMission===, Data: ${JSON.stringify(data)}`);
     const res = await diagnoseCommand.diagnoseProbeMission(data.addr, data.type);
-    EmitEvent.emitDiagnoseProbeMissionResult(client, {mission_id: data.mission_id, mission_res: res});
+    EmitEvent.emitDiagnoseProbeMissionResult(client, {mission_id: data.mission_id, device_id: data.device_id, mission_res: res});
   })
 }
 
