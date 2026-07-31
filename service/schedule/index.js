@@ -4,6 +4,9 @@ const {basicCommand, interfaceCommand, diagnoseCommand, manetCommand, domainAcce
 const Helper = require('../../extend/helper');
 const CONFIG = require('../../config/index');
 const axios = require('axios');
+const { exec } = require('child_process');
+const { promisify } = require('util');
+const execAsync = promisify(exec);
 
 module.exports = {
   osTargetScheduleTask: {
@@ -271,6 +274,22 @@ module.exports = {
       })
     },
     stopMission: function() {
+      schedule.cancelJob(this.job);
+    }
+  },
+  schedulePingTask: {
+    job: null,
+    startMission: function(client, diagnose_id, host, address_type, interface_name, frequency = 5, interval = 1){
+      this.job = schedule.scheduleJob('* * * * *', async() => {
+        let query_res = `ping ${host} -c ${frequency} -i ${interval}`;
+        (address_type == 1) ? query_res += ` -4` : query_res += ` -6`;
+        if(interface_name) query_res += ` -I ${interface_name}`;
+        const { stdout, stderr } = await execAsync(query_res);
+        const exec_res = Helper.parsePingResult(stdout);
+        EmitEvent.emitDiagnoseResult(client, {diagnose_id: diagnose_id, diagnose_result: exec_res});
+      })
+    },
+    stopMission: function(){
       schedule.cancelJob(this.job);
     }
   }

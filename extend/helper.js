@@ -231,3 +231,86 @@ exports.urlExecRes = async(url, retryCount = 0, timeout = 5000) => {
   }
 }
 
+
+exports.parsePingResult = (data) => {
+
+
+    const result = {
+        status:'failed',
+        packet:{},
+        rtt:{}
+    };
+
+
+    // 丢包率
+
+    const lossMatch = data.match(
+        /(\d+)% packet loss/
+    );
+
+
+    if(lossMatch){
+
+        result.packet.loss =
+            Number(lossMatch[1]);
+
+    }
+
+
+    // packets
+
+    const packetMatch = data.match(
+        /(\d+) packets transmitted, (\d+) received/
+    );
+
+
+    if(packetMatch){
+
+        result.packet.send =
+            Number(packetMatch[1]);
+
+
+        result.packet.receive =
+            Number(packetMatch[2]);
+
+    }
+
+
+
+    // RTT
+
+    const rttMatch = data.match(
+        /min\/avg\/max\/mdev = ([\d.]+)\/([\d.]+)\/([\d.]+)\/([\d.]+)/
+    );
+
+
+    if(rttMatch){
+
+        result.rtt={
+
+            min:Number(rttMatch[1]),
+
+            avg:Number(rttMatch[2]),
+
+            max:Number(rttMatch[3]),
+
+            mdev:Number(rttMatch[4])
+
+        }
+
+
+    }
+
+
+    if(
+      result.packet.loss === 0
+    ){
+
+        result.status='success';
+
+    }
+
+
+    return result;
+
+}

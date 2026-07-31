@@ -304,6 +304,20 @@ exports.addDiagnosePing = (client) => {
     EmitEvent.emitDiagnoseResult(client, {diagnose_id: data.diagnose_id, diagnose_result: exec_res});
   })
 }
+
+exports.addDiagnoseSchedulePing = (client) => {
+  client.on(`wss:event:node:socket:diagnose:ping:schedule:create`, async(data) => {
+    console.log(`===addDiagnoseSchedulePing===, Data: ${JSON.stringify(data)}`)
+    await schedule.schedulePingTask.startMission(client, data.diagnose_id, data.host_name, data.address_type, data.interface_name, data.frequency, data.interval);
+  })
+}
+exports.deleteDiagnoseSchedulePing = (client) => {
+  client.on(`wss:event:node:socket:diagnose:ping:schedule:delete`, async(data) => {
+    console.log(`===deleteDiagnoseSchedulePing===, Data: ${JSON.stringify(data)}`)
+    await schedule.schedulePingTask.stopMission(client);
+  })
+}
+
 //添加traceRouter诊断工具
 exports.addDiagnoseTraceRouter = (client) => {
   client.on(`wss:event:node:socket:diagnose:trace:router:create`, async(data) => {
