@@ -108,7 +108,7 @@ exports.pingExecRes = async (host) => {
       return {
         status: false,
         detail: {
-          delay: LimitData.MonitorOvertime,
+          delay: 5000,
           min: null,
           max: null,
           avg: null,
@@ -121,7 +121,7 @@ exports.pingExecRes = async (host) => {
     return {
       status: false,
       detail: {
-        delay: LimitData.MonitorOvertime,
+        delay: 5000,
         min: null,
         max: null,
         avg: null,
