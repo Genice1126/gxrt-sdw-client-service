@@ -277,7 +277,7 @@ module.exports = {
       schedule.cancelJob(this.job);
     }
   },
-  schedulePingTask: {
+  schedulePingTaskTmp: {
     job: null,
     startMission: function(client, diagnose_id, host, address_type, interface_name, frequency = 5, interval = 1){
       this.job = schedule.scheduleJob('* * * * *', async() => {
@@ -292,5 +292,31 @@ module.exports = {
     stopMission: function(){
       schedule.cancelJob(this.job);
     }
+  },
+  diagnoseProbeMissionScheduleTask: {
+    job: null,
+    startMission: function(client, data) {
+      this.job = schedule.scheduleJob('* * * * *', async() => {
+        let res_arr = [];
+        for(let i = 0 ; i < data.addr.length; i++) {
+          let tmp;
+          if(type == "1") {
+            tmp = await Helper.pingExecRes(data.addr[i]);
+          }
+          if(type == "2") {
+            tmp = await Helper.tcpExecRes(data.addr[i], data.port);
+          }
+          if(type == "3") {
+            tmp = await Helper.urlExecRes(data.addr[i]);
+          }
+          res_arr.push(tmp);
+        }
+        EmitEvent.emitDiagnoseProbeMissionResult(client, {mission_id: data.mission_id, device_id: data.device_id, mission_res: res});
+      })
+    },
+    stopMission: function() {
+      schedule.cancelJob(this.job);
+    }
   }
 }
+
