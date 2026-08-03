@@ -91,7 +91,10 @@ exports.pingExecRes = async (host) => {
       timeout: 3,
       extra: [isWin ? '-n' : '-c', '10'] // 发10包
     });
+    console.log('ping result:', host, res);
+
     const parse = (val) => (isNaN(val) ? null : parseFloat(val).toFixed(2));
+    // console.log('ping parse:',parse);
     if(res.alive) {
       return {
         status: true,
