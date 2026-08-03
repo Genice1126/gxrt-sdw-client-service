@@ -489,8 +489,8 @@ exports.disableCloudProxy = (client) => {
 exports.createDiagnoseProbeMission = (client) => {
   client.on(`wss:event:node:socket:diagnose:probe:mission:create`, async(data) => {
     console.log(`===DiagnoseProbeMission===, Data: ${JSON.stringify(data)}`);
-    if(data.is_schedule == "1") {
-      schedule.diagnoseProbeMissionScheduleTask(client, data);
+    if(data.is_schedule == 1) {
+      schedule.diagnoseProbeMissionScheduleTask.startMission(client, data);
     }else{
       const res = await diagnoseCommand.diagnoseProbeMission(data.addr, data.type);
       EmitEvent.emitDiagnoseProbeMissionResult(client, {mission_id: data.mission_id, device_id: data.device_id, mission_res: res});
