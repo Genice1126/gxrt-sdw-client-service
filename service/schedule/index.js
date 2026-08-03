@@ -300,13 +300,13 @@ module.exports = {
         let res_arr = [];
         for(let i = 0 ; i < data.addr.length; i++) {
           let tmp;
-          if(type == "1") {
+          if(data.type == "1") {
             tmp = await Helper.pingExecRes(data.addr[i]);
           }
-          if(type == "2") {
+          if(data.type == "2") {
             tmp = await Helper.tcpExecRes(data.addr[i], data.port);
           }
-          if(type == "3") {
+          if(data.type == "3") {
             tmp = await Helper.urlExecRes(data.addr[i]);
           }
           res_arr.push(tmp);
