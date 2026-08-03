@@ -87,6 +87,7 @@ exports.stringTrimLine = (str) => {
 exports.pingExecRes = async (host) => {
   try {
     const isWin = process.platform === 'win32';
+    console.log('ping isWin:', isWin);
     const res = await ping.promise.probe(host, {
       timeout: 3,
       extra: [isWin ? '-n' : '-c', '10'] // 发10包
@@ -121,6 +122,7 @@ exports.pingExecRes = async (host) => {
       }
     }
   } catch(e) {
+    console.log('e====>>', e)
     return {
       status: false,
       detail: {
