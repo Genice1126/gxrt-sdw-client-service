@@ -214,7 +214,7 @@ class HttpService extends BaseServer {
         const rtt_avg = rtt_match ? rtt_match[2] : null;
         const rtt_max = rtt_match ? rtt_match[3] : null;
         const rtt_mdev = rtt_match ? rtt_match[4] : null;
-        const quality_body = {interface_name, packet_loss, rtt_min, rtt_avg, rtt_max, rtt_mdev}
+        const quality_body = {interface_name: `GE${i}`, packet_loss, rtt_min, rtt_avg, rtt_max, rtt_mdev}
 
 
         let deploy_access_type, deploy_detail;

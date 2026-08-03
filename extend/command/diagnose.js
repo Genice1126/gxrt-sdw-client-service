@@ -103,7 +103,8 @@ exports.diagnoseProbeMission = async (addr, type, port) => {
     }
     return res_arr;
   } catch(e) {
-    return res_arr;
+    console.log('e==>>', e)
+    return [];
   }
   
 }
