@@ -311,7 +311,7 @@ module.exports = {
           }
           res_arr.push(tmp);
         }
-        EmitEvent.emitDiagnoseProbeMissionResult(client, {mission_id: data.mission_id, device_id: data.device_id, mission_res: res});
+        EmitEvent.emitDiagnoseProbeMissionResult(client, {mission_id: data.mission_id, device_id: data.device_id, mission_res: res_arr});
       })
     },
     stopMission: function() {
