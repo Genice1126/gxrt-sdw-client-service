@@ -49,10 +49,14 @@ exports.systemLogger = (level, mode, ctx) => {
  */
 exports.readDeviceSerial = () => {
   return new Promise((resolve, rejected) => {
-    process.exec(`dmidecode -t system |grep Serial|sed "s/^.Serial Number\: //g"`, (err, stdout, stderr) => {
+    process.exec(`/root/cpe-sh.sh`, (err, stdout, stderr) => {
       (stdout) ? stdout = Helper.stringTrimLine(stdout) : stdout;
       resolve(stdout);
     })
+    // process.exec(`dmidecode -t system |grep Serial|sed "s/^.Serial Number\: //g"`, (err, stdout, stderr) => {
+    //   (stdout) ? stdout = Helper.stringTrimLine(stdout) : stdout;
+    //   resolve(stdout);
+    // })
   })
 }
 /**
