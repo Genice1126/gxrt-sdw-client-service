@@ -50,6 +50,9 @@ exports.systemLogger = (level, mode, ctx) => {
 exports.readDeviceSerial = () => {
   return new Promise((resolve, rejected) => {
     process.exec(`/root/cpe-sh.sh`, (err, stdout, stderr) => {
+      console.log(err);
+    console.log(stdout);
+    console.log(stderr);
       (stdout) ? stdout = Helper.stringTrimLine(stdout) : stdout;
       resolve(stdout);
     })
